@@ -13,7 +13,12 @@ import {PartnersModule} from './partners/partners.module';
       password: 'root',
       database: 'test',
       autoLoadModels: true,
-      synchronize: true
+      synchronize: true,
+      define: {
+        timestamps: false,
+        createdAt: false,
+        updatedAt: false,
+      }
     }),
     PartnersModule,
   ],
