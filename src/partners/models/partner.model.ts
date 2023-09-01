@@ -1,7 +1,21 @@
 import { Column, Model, Table } from 'sequelize-typescript';
 
+export interface IPartner {
+  partnerId: number;
+  fiatBalance: number;
+  urlPanel: string;
+  partnerName: string;
+  currency: string;
+  freeRate: string;
+  payWindow: number;
+  rateBTCID: string;
+  rateUSDTID: string;
+  countBotLimit: string;
+  botLimit: string;
+}
+
 @Table
-export class Partner extends Model {
+export class Partner extends Model implements IPartner {
   @Column
   partnerId: number;
   @Column

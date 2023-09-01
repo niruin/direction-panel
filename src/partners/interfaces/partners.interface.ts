@@ -1,6 +1,7 @@
 import {ApiProperty} from '@nestjs/swagger';
 
 import {Response} from '../../interfaces/interface';
+import {IPartner} from '../models/partner.model';
 
 class PartnersCreateResponseData {
   @ApiProperty({example: 'success'})
@@ -30,4 +31,34 @@ class PartnersRemoveResponseData {
 export class PartnersRemoveResponse extends Response {
   @ApiProperty({example: {id: 1}})
   data: PartnersRemoveResponseData
+}
+
+export class PartnerResponseData implements IPartner {
+  @ApiProperty({example: 1})
+  partnerId: number;
+  @ApiProperty({example: 10})
+  fiatBalance: number;
+  @ApiProperty({example: '/some-url'})
+  urlPanel: string;
+  @ApiProperty({example: 'partner name example'})
+  partnerName: string;
+  @ApiProperty({example: 'RUB'})
+  currency: string;
+  @ApiProperty({example: 1.5})
+  freeRate: string;
+  @ApiProperty({example: 20})
+  payWindow: number;
+  @ApiProperty({example: 2})
+  rateBTCID: string;
+  @ApiProperty({example: 3})
+  rateUSDTID: string;
+  @ApiProperty({example: 5})
+  countBotLimit: string;
+  @ApiProperty({example: 5})
+  botLimit: string;
+}
+
+export class PartnersAllResponse extends Response {
+  @ApiProperty({type: [PartnerResponseData]})
+  data: PartnerResponseData[];
 }

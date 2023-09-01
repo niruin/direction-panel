@@ -1,5 +1,5 @@
 import {ApiProperty} from '@nestjs/swagger';
-import {IsEmpty, IsNotEmpty, IsString} from 'class-validator';
+import {IsNumber, IsString} from 'class-validator';
 
 export class CreatePartnerDto {
   @ApiProperty({example: 'partner name example'})
@@ -10,21 +10,27 @@ export class CreatePartnerDto {
   @IsString()
   readonly urlPanel: string;
 
-  // @ApiProperty({example: 'RUB'})
-  // readonly currency: string;
-  //
-  // @ApiProperty({example: 1.5})
-  // readonly freeRate: number;
-  //
-  // @ApiProperty({example: 2})
-  // readonly rateBTCID: number;
-  //
-  // @ApiProperty({example: 3})
-  // readonly rateUSDTID: number;
-  //
-  // @ApiProperty({example: 5})
-  // readonly botLimit: number;
-  //
-  // @ApiProperty({example: 5})
-  // readonly countBotLimit: number;
+  @ApiProperty({example: 'RUB'})
+  @IsString()
+  readonly currency: string;
+
+  @ApiProperty({example: 1.5})
+  @IsNumber()
+  readonly freeRate: number;
+
+  @ApiProperty({example: 2})
+  @IsNumber()
+  readonly rateBTCID: number;
+
+  @ApiProperty({example: 3})
+  @IsNumber()
+  readonly rateUSDTID: number;
+
+  @ApiProperty({example: 5})
+  @IsNumber()
+  readonly botLimit: number;
+
+  @ApiProperty({example: 5})
+  @IsNumber()
+  readonly countBotLimit: number;
 }

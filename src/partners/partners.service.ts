@@ -4,14 +4,20 @@ import {InjectModel} from '@nestjs/sequelize';
 import {CreatePartnerDto} from './dto/create-partner.dto';
 import {Partner} from './models/partner.model';
 import {UpdatePartnerDto} from './dto/update-partner.dto';
-import {PartnersCreateResponse, PartnersRemoveResponse, PartnersUpdateResponse} from './interfaces/partners.interface';
+import {
+  PartnersAllResponse,
+  PartnersCreateResponse,
+  PartnersRemoveResponse,
+  PartnersUpdateResponse
+} from './interfaces/partners.interface';
 
 @Injectable()
 export class PartnersService {
   constructor(
     @InjectModel(Partner)
     private readonly partnerModel: typeof Partner,
-  ) {}
+  ) {
+  }
 
   async create(createPartnerDto: CreatePartnerDto): Promise<PartnersCreateResponse> {
     const response = await this.partnerModel.create({...createPartnerDto});
@@ -54,8 +60,22 @@ export class PartnersService {
     }
   }
 
-  async findAll(): Promise<Partner[]> {
-    return this.partnerModel.findAll();
+  async findAll(): Promise<PartnersAllResponse> {
+    const response = await this.partnerModel.findAll().catch((error) => {
+      throw new BadRequestException({
+        status: 'error',
+        message: ['Не удалось загрузить данные'],
+        statusCode: HttpStatus.BAD_REQUEST,
+        error: error.message,
+      })
+    });
+
+    return {
+      status: 'success',
+      message: ['Данные получены'],
+      statusCode: HttpStatus.OK,
+      data: response
+    }
   }
 
   findOne(id: string): Promise<Partner> {
@@ -69,7 +89,7 @@ export class PartnersService {
   async remove(id: string): Promise<PartnersRemoveResponse> {
     const user = await this.findOne(id);
 
-    if(!user) {
+    if (!user) {
       throw new BadRequestException({
         status: 'error',
         message: ['Элемент не удален'],
