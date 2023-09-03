@@ -10,17 +10,29 @@ import {
   PartnersRemoveResponse,
   PartnersUpdateResponse
 } from './interfaces/partners.interface';
+import {PartnerLogsService} from '../partner-logs/partner-logs.service';
+import {CreatePartnerLogDto} from '../partner-logs/dto/create-partner-log.dto';
 
 @Injectable()
 export class PartnersService {
   constructor(
     @InjectModel(Partner)
     private readonly partnerModel: typeof Partner,
-  ) {
-  }
+    private readonly partnerLogsService: PartnerLogsService,
+  ) {}
 
   async create(createPartnerDto: CreatePartnerDto): Promise<PartnersCreateResponse> {
     const response = await this.partnerModel.create({...createPartnerDto});
+
+    const logData: CreatePartnerLogDto = {
+      date: new Date(),
+      employee: '',
+      event: 'Добавлен',
+      other: '',
+      partnerName: createPartnerDto.partnerName,
+    }
+
+    this.partnerLogsService.create(logData)
 
     return {
       status: 'success',
@@ -49,6 +61,16 @@ export class PartnersService {
 
     const effectedCount = response[0];
     const msg = Boolean(effectedCount) ? 'Изменения сохранены' : 'Данные не изменены';
+
+    const logData: CreatePartnerLogDto = {
+      date: new Date(),
+      employee: '',
+      event: 'Изменен',
+      other: '',
+      partnerName: updatePartnerDto.partnerName,
+    }
+
+    this.partnerLogsService.create(logData)
 
     return {
       status: 'success',
@@ -99,6 +121,16 @@ export class PartnersService {
     }
 
     await user.destroy();
+
+    const logData: CreatePartnerLogDto = {
+      date: new Date(),
+      employee: '',
+      event: 'Удален',
+      other: '',
+      partnerName: user.partnerName,
+    }
+
+    this.partnerLogsService.create(logData)
 
     return {
       status: 'success',
