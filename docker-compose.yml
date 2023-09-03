@@ -33,4 +33,4 @@ services:
     image: adminer
     restart: always
     ports:
-      - 3306:3306
+      - "3306:3306"
