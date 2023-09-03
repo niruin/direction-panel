@@ -8,7 +8,7 @@ import {PartnerLogsModule} from './partner-logs/partner-logs.module';
   imports: [
     SequelizeModule.forRoot({
       dialect: 'mysql',
-      host: '0.0.0.0',
+      host: '80.78.24.127',
       port: 3306,
       username: 'root',
       password: 'root',
