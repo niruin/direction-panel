@@ -1,23 +1,24 @@
 import { Column, Model, Table } from 'sequelize-typescript';
+import {DataTypes} from 'sequelize';
 
 export interface IPartner {
-  partnerId: number;
+  id: number;
   fiatBalance: number;
   urlPanel: string;
   partnerName: string;
   currency: string;
-  freeRate: string;
+  freeRate: number;
   payWindow: number;
-  rateBTCID: string;
-  rateUSDTID: string;
-  countBotLimit: string;
-  botLimit: string;
+  rateBTCID: number;
+  rateUSDTID: number;
+  countBotLimit: number;
+  botLimit: number;
 }
 
 @Table
 export class Partner extends Model implements IPartner {
-  @Column
-  partnerId: number;
+  @Column({ type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true})
+  id: number;
   @Column
   fiatBalance: number;
   @Column
@@ -27,15 +28,15 @@ export class Partner extends Model implements IPartner {
   @Column
   currency: string;
   @Column
-  freeRate: string;
+  freeRate: number;
   @Column
   payWindow: number;
   @Column
-  rateBTCID: string;
+  rateBTCID: number;
   @Column
-  rateUSDTID: string;
+  rateUSDTID: number;
   @Column
-  countBotLimit: string;
+  countBotLimit: number;
   @Column
-  botLimit: string;
+  botLimit: number;
 }

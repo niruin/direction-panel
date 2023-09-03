@@ -35,7 +35,7 @@ export class PartnersRemoveResponse extends Response {
 
 export class PartnerResponseData implements IPartner {
   @ApiProperty({example: 1})
-  partnerId: number;
+  id: number;
   @ApiProperty({example: 10})
   fiatBalance: number;
   @ApiProperty({example: '/some-url'})
@@ -45,17 +45,17 @@ export class PartnerResponseData implements IPartner {
   @ApiProperty({example: 'RUB'})
   currency: string;
   @ApiProperty({example: 1.5})
-  freeRate: string;
+  freeRate: number;
   @ApiProperty({example: 20})
   payWindow: number;
   @ApiProperty({example: 2})
-  rateBTCID: string;
+  rateBTCID: number;
   @ApiProperty({example: 3})
-  rateUSDTID: string;
+  rateUSDTID: number;
   @ApiProperty({example: 5})
-  countBotLimit: string;
+  countBotLimit: number;
   @ApiProperty({example: 5})
-  botLimit: string;
+  botLimit: number;
 }
 
 export class PartnersAllResponse extends Response {
