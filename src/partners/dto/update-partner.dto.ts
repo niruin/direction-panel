@@ -1,7 +1,10 @@
 import {ApiProperty} from '@nestjs/swagger';
-import {CreatePartnerDto} from './create-partner.dto';
+import {IsNumber} from 'class-validator';
 
-export class UpdatePartnerDto extends CreatePartnerDto {
+import {CreatePartnerDto, ICreatePartner} from './create-partner.dto';
+
+export class UpdatePartnerDto extends CreatePartnerDto implements ICreatePartner {
   @ApiProperty({example: 1})
+  @IsNumber()
   readonly id: number;
 }

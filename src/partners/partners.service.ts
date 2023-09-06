@@ -12,6 +12,7 @@ import {
 } from './interfaces/partners.interface';
 import {PartnerLogsService} from '../partner-logs/partner-logs.service';
 import {CreatePartnerLogDto} from '../partner-logs/dto/create-partner-log.dto';
+import {IPartnerLog} from '../partner-logs/models/partner-log.model';
 
 @Injectable()
 export class PartnersService {
@@ -24,15 +25,7 @@ export class PartnersService {
   async create(createPartnerDto: CreatePartnerDto): Promise<PartnersCreateResponse> {
     const response = await this.partnerModel.create({...createPartnerDto});
 
-    const logData: CreatePartnerLogDto = {
-      date: new Date(),
-      employee: '',
-      event: 'Добавлен',
-      other: '',
-      partnerName: createPartnerDto.partnerName,
-    }
-
-    this.partnerLogsService.create(logData)
+    this.partnerLogsService.create(createPartnerDto, response.dataValues)
 
     return {
       status: 'success',
@@ -44,7 +37,24 @@ export class PartnersService {
     }
   }
 
+  // createLog(beforeUpdateUser, afterUpdateUser) {
+  //
+  //
+  //   const logData: IPartnerLog = {
+  //     date: new Date(),
+  //     employee: '',
+  //     event: 'Изменен',
+  //     other: '',
+  //     partnerId: afterUpdateUser.id,
+  //     partnerName: afterUpdateUser.partnerName,
+  //   }
+  //
+  //   this.partnerLogsService.create(beforeUpdateUser, afterUpdateUser)
+  // }
+
   async update(updatePartnerDto: UpdatePartnerDto): Promise<PartnersUpdateResponse> {
+    // const beforeUpdateUser = await this.findOne(String(updatePartnerDto.id));
+    const {id, ...restData} = updatePartnerDto;
     const response = await this.partnerModel.update({...updatePartnerDto},
       {
         where: {
@@ -59,18 +69,13 @@ export class PartnersService {
       })
     });
 
+    const afterUpdateUser = await this.findOne(String(updatePartnerDto.id));
+    // this.createLog(beforeUpdateUser, afterUpdateUser);
+
+    this.partnerLogsService.create(restData, afterUpdateUser.dataValues)
+
     const effectedCount = response[0];
     const msg = Boolean(effectedCount) ? 'Изменения сохранены' : 'Данные не изменены';
-
-    const logData: CreatePartnerLogDto = {
-      date: new Date(),
-      employee: '',
-      event: 'Изменен',
-      other: '',
-      partnerName: updatePartnerDto.partnerName,
-    }
-
-    this.partnerLogsService.create(logData)
 
     return {
       status: 'success',
@@ -127,10 +132,11 @@ export class PartnersService {
       employee: '',
       event: 'Удален',
       other: '',
+      partnerId: user.id,
       partnerName: user.partnerName,
     }
 
-    this.partnerLogsService.create(logData)
+    // this.partnerLogsService.create(logData)
 
     return {
       status: 'success',
