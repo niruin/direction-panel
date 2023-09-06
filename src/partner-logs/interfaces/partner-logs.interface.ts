@@ -2,7 +2,7 @@ import {ApiProperty} from '@nestjs/swagger';
 
 import {Response} from '../../interfaces/interface';
 import {IPartnerLog} from '../models/partner-log.model';
-
+import {LogEvent} from '../dto/create-partner-log.dto';
 
 export class PartnerLogsResponseData implements IPartnerLog {
   @ApiProperty({example: 1})
@@ -11,12 +11,16 @@ export class PartnerLogsResponseData implements IPartnerLog {
   date: Date;
   @ApiProperty({example: 'иванов'})
   employee: string;
-  @ApiProperty({example: 'Добавление'})
-  event: string;
+  @ApiProperty({example: 'Добавлен'})
+  event: LogEvent;
   @ApiProperty({example: 'Дополнительное описание'})
   other: string;
+  @ApiProperty({example: 1})
+  partnerId: number;
   @ApiProperty({example: 'Иванов'})
   partnerName: string;
+  // @ApiProperty({type: [PartnerLogsDataDifferences]})
+  // dataDifferences: PartnerLogsDataDifferences[];
 }
 
 export class PartnerLogsAllResponse extends Response {

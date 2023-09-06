@@ -1,9 +1,12 @@
 import {IPartnerLog} from '../models/partner-log.model';
 
-export class CreatePartnerLogDto implements Omit<IPartnerLog, 'id'>{
+export type LogEvent =  'Добавлен' | 'Изменен' | 'Удален';
+
+export class CreatePartnerLogDto implements Omit<IPartnerLog, 'id' | 'partnerLogDetails' >{
   date: Date;
   employee: string;
-  event: string;
+  event: LogEvent;
   other: string;
+  partnerId: number;
   partnerName: string;
 }

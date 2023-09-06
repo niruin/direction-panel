@@ -2,21 +2,47 @@ import {BadRequestException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/sequelize';
 
 import {PartnerLogsAllResponse} from './interfaces/partner-logs.interface';
-import {PartnerLog} from './models/partner-log.model';
-import {CreatePartnerDto} from '../partners/dto/create-partner.dto';
+import {IPartnerLog, PartnerLog} from './models/partner-log.model';
 import {PartnersCreateResponse} from '../partners/interfaces/partners.interface';
-import {CreatePartnerLogDto} from './dto/create-partner-log.dto';
+import { LogEvent} from './dto/create-partner-log.dto';
+import {PartnerLogDetailsService} from '../partner-log-details/partner-log-details.service';
+import {ICreatePartner} from '../partners/dto/create-partner.dto';
+import {IPartner} from '../partners/models/partner.model';
 
 @Injectable()
 export class PartnerLogsService {
   constructor(
     @InjectModel(PartnerLog)
     private readonly partnerLogModel: typeof PartnerLog,
+    private readonly partnerLogDetailsService: PartnerLogDetailsService,
   ) {
   }
 
-  async create(createPartnerLogDto: CreatePartnerLogDto): Promise<PartnersCreateResponse> {
-    const response = await this.partnerLogModel.create({...createPartnerLogDto});
+  async createWithDetails(beforeUpdateUser: ICreatePartner, afterUpdateUser: IPartner, event: LogEvent): Promise<PartnersCreateResponse> {
+    const logData: IPartnerLog = {
+      date: new Date(),
+      employee: '',
+      event: event,
+      other: '',
+      partnerId: afterUpdateUser.id,
+      partnerName: beforeUpdateUser.partnerName,
+    }
+    const response = await this.partnerLogModel.create({...logData});
+
+    this.partnerLogDetailsService.create(beforeUpdateUser, afterUpdateUser);
+
+    return {
+      status: 'success',
+      statusCode: HttpStatus.OK,
+      message: ['Запись добавлена'],
+      data: {
+        id: response.dataValues.id
+      }
+    }
+  }
+
+  async create(data: IPartnerLog): Promise<PartnersCreateResponse> {
+    const response = await this.partnerLogModel.create({...data});
 
     return {
       status: 'success',

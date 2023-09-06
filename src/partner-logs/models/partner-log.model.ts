@@ -1,11 +1,13 @@
-import { Column, Model, Table } from 'sequelize-typescript';
+import { Column, HasOne, Model, Table} from 'sequelize-typescript';
 import {DataTypes} from 'sequelize';
+import {PartnerLogDetails} from '../../partner-log-details/models/partner-log-details.model';
+import {LogEvent} from '../dto/create-partner-log.dto';
 
 export interface IPartnerLog {
-  id: number;
+  partnerId: number;
   partnerName: string;
   employee: string;
-  event: string;
+  event: LogEvent;
   other: string;
   date: Date;
 }
@@ -15,13 +17,18 @@ export class PartnerLog extends Model implements IPartnerLog {
   @Column({ type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true})
   id: number;
   @Column
+  partnerId: number;
+  @Column
   partnerName: string;
   @Column
   employee: string;
   @Column
-  event: string;
+  event: LogEvent;
   @Column
   other: string;
   @Column
   date: Date;
+
+  @HasOne( () => PartnerLogDetails)
+  partnerLogDetails: PartnerLogDetails
 }

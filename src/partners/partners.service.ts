@@ -29,7 +29,8 @@ export class PartnersService {
       employee: '',
       event: 'Добавлен',
       other: '',
-      partnerName: createPartnerDto.partnerName,
+      partnerId: response.dataValues.id,
+      partnerName: response.dataValues.partnerName,
     }
 
     this.partnerLogsService.create(logData)
@@ -45,6 +46,7 @@ export class PartnersService {
   }
 
   async update(updatePartnerDto: UpdatePartnerDto): Promise<PartnersUpdateResponse> {
+    const beforeUpdateUser = await this.findOne(String(updatePartnerDto.id));
     const response = await this.partnerModel.update({...updatePartnerDto},
       {
         where: {
@@ -59,18 +61,12 @@ export class PartnersService {
       })
     });
 
+    const afterUpdateUser = await this.findOne(String(updatePartnerDto.id));
+
+    this.partnerLogsService.createWithDetails(beforeUpdateUser.dataValues, afterUpdateUser.dataValues, 'Изменен')
+
     const effectedCount = response[0];
     const msg = Boolean(effectedCount) ? 'Изменения сохранены' : 'Данные не изменены';
-
-    const logData: CreatePartnerLogDto = {
-      date: new Date(),
-      employee: '',
-      event: 'Изменен',
-      other: '',
-      partnerName: updatePartnerDto.partnerName,
-    }
-
-    this.partnerLogsService.create(logData)
 
     return {
       status: 'success',
@@ -127,6 +123,7 @@ export class PartnersService {
       employee: '',
       event: 'Удален',
       other: '',
+      partnerId: user.id,
       partnerName: user.partnerName,
     }
 

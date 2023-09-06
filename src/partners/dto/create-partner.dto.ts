@@ -1,7 +1,18 @@
 import {ApiProperty} from '@nestjs/swagger';
 import {IsNumber, IsString} from 'class-validator';
 
-export class CreatePartnerDto {
+export interface ICreatePartner {
+  partnerName: string;
+  urlPanel: string;
+  currency: string;
+  freeRate: number;
+  rateBTCID: number;
+  rateUSDTID: number;
+  botLimit: number;
+  countBotLimit: number;
+}
+
+export class CreatePartnerDto implements ICreatePartner {
   @ApiProperty({example: 'partner name example'})
   @IsString()
   readonly partnerName: string;
