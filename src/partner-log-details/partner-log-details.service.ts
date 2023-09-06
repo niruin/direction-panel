@@ -1,7 +1,8 @@
-import {Injectable} from '@nestjs/common';
+import {HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/sequelize';
 
-import {IPartnerLogDetailsModel, PartnerLogDetails} from './models/partner-log-details.model';
+import {IPartnerLogDetails, PartnerLogDetails} from './models/partner-log-details.model';
+import {PartnerLogDetailsResponse} from './interfaces/partner-log-details.interface';
 
 @Injectable()
 export class PartnerLogDetailsService {
@@ -11,16 +12,23 @@ export class PartnerLogDetailsService {
   ) {
   }
 
-  findOne(id: string) {
-    return this.partnerLogDetailsModel.findOne({
+  async findOne(id: string):  Promise<PartnerLogDetailsResponse> {
+    const response = await this.partnerLogDetailsModel.findOne({
       where: {
-        id,
+        partnerLogId: Number(id),
       },
     });
+
+    return {
+      status: 'success',
+      statusCode: HttpStatus.OK,
+      message: ['Данные получены'],
+      data: response.dataValues
+    }
   }
 
-  create(beforeUpdateUser, afterUpdateUser) {
-    const data: IPartnerLogDetailsModel = {
+  create(beforeUpdateUser, afterUpdateUser, idLog: number) {
+    const data: IPartnerLogDetails = {
       prevPartnerName: beforeUpdateUser.partnerName,
       prevUrlPanel: beforeUpdateUser.urlPanel,
       prevCurrency: beforeUpdateUser.currency,
@@ -37,6 +45,7 @@ export class PartnerLogDetailsService {
       rateUSDTID: afterUpdateUser.rateUSDTID,
       botLimit: afterUpdateUser.botLimit,
       countBotLimit: afterUpdateUser.countBotLimit,
+      partnerLogId: idLog,
     }
     this.partnerLogDetailsModel.create({...data});
   }

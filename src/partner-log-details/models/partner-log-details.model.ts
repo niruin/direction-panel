@@ -1,9 +1,10 @@
 import {BelongsTo, Column, ForeignKey, Model, Table} from 'sequelize-typescript';
 import {DataTypes} from 'sequelize';
+
 import {PartnerLog} from '../../partner-logs/models/partner-log.model';
 import {ICreatePartner} from '../../partners/dto/create-partner.dto';
 
-export interface IPartnerLogDetailsModel extends ICreatePartner {
+export interface IPartnerLogDetails extends ICreatePartner {
   prevPartnerName: string;
   prevUrlPanel: string;
   prevCurrency: string;
@@ -12,11 +13,11 @@ export interface IPartnerLogDetailsModel extends ICreatePartner {
   prevRateUSDTID: number;
   prevBotLimit: number;
   prevCountBotLimit: number;
+  partnerLogId: number;
 }
 
 @Table
-export class PartnerLogDetails extends Model implements IPartnerLogDetailsModel {
-// export class PartnerLogDetails extends Model {
+export class PartnerLogDetails extends Model implements IPartnerLogDetails {
   @Column({ type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true})
   id: number;
   @Column

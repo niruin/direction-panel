@@ -29,7 +29,7 @@ export class PartnerLogsService {
     }
     const response = await this.partnerLogModel.create({...logData});
 
-    this.partnerLogDetailsService.create(beforeUpdateUser, afterUpdateUser);
+    this.partnerLogDetailsService.create(beforeUpdateUser, afterUpdateUser, response.dataValues.id);
 
     return {
       status: 'success',
