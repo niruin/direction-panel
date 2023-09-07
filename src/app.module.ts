@@ -5,6 +5,8 @@ import {PartnersModule} from './partners/partners.module';
 import {PartnerLogsModule} from './partner-logs/partner-logs.module';
 import {PartnerLogDetailsModule} from './partner-log-details/partner-log-details.module';
 import {WithdrawsModule} from './withdraws/withdraws.module';
+import {UsersModule} from './users/users.module';
+import {AuthModule} from './auth/auth.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import {WithdrawsModule} from './withdraws/withdraws.module';
     PartnerLogDetailsModule,
     PartnerLogsModule,
     WithdrawsModule,
+    UsersModule,
+    AuthModule
   ],
 })
 export class AppModule {}

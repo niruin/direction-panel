@@ -1,0 +1,1 @@
+export {EnumUserRole as Role} from '../../users/interfaces/users.interface';
