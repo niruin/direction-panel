@@ -4,6 +4,7 @@ import {SequelizeModule} from '@nestjs/sequelize';
 import {PartnersModule} from './partners/partners.module';
 import {PartnerLogsModule} from './partner-logs/partner-logs.module';
 import {PartnerLogDetailsModule} from './partner-log-details/partner-log-details.module';
+import {WithdrawsModule} from './withdraws/withdraws.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import {PartnerLogDetailsModule} from './partner-log-details/partner-log-details
     PartnersModule,
     PartnerLogDetailsModule,
     PartnerLogsModule,
+    WithdrawsModule,
   ],
 })
 export class AppModule {}
