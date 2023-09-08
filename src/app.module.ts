@@ -16,8 +16,8 @@ import {RolesGuard} from './auth/guard/roles.guard';
   imports: [
     SequelizeModule.forRoot({
       dialect: 'mysql',
-      // host: '80.78.24.127',
-      host: '0.0.0.0',
+      host: '128.72.71.122',
+      // host: '0.0.0.0',
       port: 3306,
       username: 'root',
       password: 'root',
