@@ -7,6 +7,7 @@ import { Roles } from './decorator/roles.decorator';
 import { Role } from './enum/role.enum';
 import { Public } from './decorator/public.decorator';
 import {SignInResponse, SignInResponseType} from './types';
+import {AuthGuard} from './guard/auth.guard';
 
 
 @ApiTags('Auth')
@@ -22,9 +23,11 @@ export class AuthController {
     return this.authService.signIn(username, password);
   }
 
-  // @Get('profile')
-  // @Roles(Role.User)
-  // getProfile(@Request() req) {
-  //   return req.user;
-  // }
+  @Get('profile')
+  // @Roles(Role.Employee)
+  getProfile(@Request() req) {
+    return req.user;
+    // console.log(req);
+    // return "asdf";
+  }
 }
