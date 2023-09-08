@@ -19,8 +19,6 @@ export class PartnerLogsResponseData implements IPartnerLog {
   partnerId: number;
   @ApiProperty({example: 'Иванов'})
   partnerName: string;
-  // @ApiProperty({type: [PartnerLogsDataDifferences]})
-  // dataDifferences: PartnerLogsDataDifferences[];
 }
 
 export class PartnerLogsAllResponse extends Response {

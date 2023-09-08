@@ -7,6 +7,10 @@ import {PartnerLogDetailsModule} from './partner-log-details/partner-log-details
 import {WithdrawsModule} from './withdraws/withdraws.module';
 import {UsersModule} from './users/users.module';
 import {AuthModule} from './auth/auth.module';
+import {WithdrawLogsModule} from './withdraw-logs/withdraw-logs.module';
+import {APP_GUARD} from '@nestjs/core';
+import {AuthGuard} from './auth/guard/auth.guard';
+import {RolesGuard} from './auth/guard/roles.guard';
 
 @Module({
   imports: [
@@ -30,8 +34,19 @@ import {AuthModule} from './auth/auth.module';
     PartnerLogDetailsModule,
     PartnerLogsModule,
     WithdrawsModule,
+    WithdrawLogsModule,
     UsersModule,
-    AuthModule
+    AuthModule,
   ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ]
 })
 export class AppModule {}

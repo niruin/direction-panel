@@ -5,12 +5,15 @@ import {EnumCancelReason, EnumStatus, Withdraws} from './models/withdraws.model'
 import {WithdrawsAllResponse} from './interfaces/withdraws.interface';
 import {IExecuteWithdrawsDto, IUpdateStatusWithdrawsDto} from './dto/execute-withdraws.dto';
 import {Response} from '../interfaces/interface'
+import {WithdrawLogsService} from '../withdraw-logs/withdraw-logs.service';
+import {CreateWithdrawLogDto} from '../withdraw-logs/dto/create-withdraw-log.dto';
 
 @Injectable()
 export class WithdrawsService {
   constructor(
     @InjectModel(Withdraws)
-    private readonly withdrawsModel: typeof Withdraws
+    private readonly withdrawsModel: typeof Withdraws,
+    private readonly withdrawLogsService: WithdrawLogsService
   ) {
   }
 
@@ -54,6 +57,16 @@ export class WithdrawsService {
       })
     });
 
+
+    const logData: CreateWithdrawLogDto = {
+      date: new Date(),
+      withdrawId: id,
+      event: EnumStatus.send,
+      employee: '',
+      other: ''
+    }
+    this.withdrawLogsService.create(logData)
+
     return {
       status: 'success',
       message: ['Данные обновлены'],
@@ -77,6 +90,16 @@ export class WithdrawsService {
         error: error.message,
       })
     });
+
+    const logData: CreateWithdrawLogDto = {
+      date: new Date(),
+      withdrawId: id,
+      event: executeWithdrawsDto.status,
+      employee: '',
+      other: ''
+    }
+
+    this.withdrawLogsService.create(logData)
 
     return {
       status: 'success',
