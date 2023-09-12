@@ -46,7 +46,7 @@ export class UsersService {
     })
 
     // @ts-ignore
-    return result;
+    return result.sort((a,b) => b.id - a.id);
   }
 
   findOne(username: string): Promise<User> {

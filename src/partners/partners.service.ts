@@ -79,7 +79,7 @@ export class PartnersService {
   }
 
   async findAll(): Promise<PartnersAllResponse> {
-    const response = await this.partnerModel.findAll().catch((error) => {
+    const response = await this.partnerModel.findAll({raw: true}).catch((error) => {
       throw new BadRequestException({
         status: 'error',
         message: ['Не удалось загрузить данные'],
@@ -92,7 +92,7 @@ export class PartnersService {
       status: 'success',
       message: ['Данные получены'],
       statusCode: HttpStatus.OK,
-      data: response
+      data: response.sort((a,b) => b.id - a.id)
     }
   }
 

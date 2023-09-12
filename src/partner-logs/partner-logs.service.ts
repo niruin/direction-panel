@@ -55,7 +55,7 @@ export class PartnerLogsService {
   }
 
   async findAll(): Promise<PartnerLogsAllResponse> {
-    const response = await this.partnerLogModel.findAll().catch((error) => {
+    const response = await this.partnerLogModel.findAll({raw: true}).catch((error) => {
       throw new BadRequestException({
         status: 'error',
         message: ['Не удалось загрузить данные'],
@@ -68,7 +68,7 @@ export class PartnerLogsService {
       status: 'success',
       message: ['Данные получены'],
       statusCode: HttpStatus.OK,
-      data: response
+      data: response.sort((a,b) => b.id - a.id)
     }
   }
 }

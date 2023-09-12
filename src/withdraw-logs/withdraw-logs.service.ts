@@ -34,7 +34,7 @@ export class WithdrawLogsService {
       })
     });
 
-    return response
+    return response.sort((a,b) => b.id - a.id)
 
     // return {
     //   status: 'success',
