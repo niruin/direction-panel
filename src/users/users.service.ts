@@ -30,13 +30,6 @@ export class UsersService {
       })
     });
 
-    // return {
-    //   status: 'success',
-    //   message: ['Данные получены'],
-    //   statusCode: HttpStatus.OK,
-    //   data: response
-    // }
-
     const result  = response.map(item => {
       return {
         id: item.id,
@@ -47,6 +40,15 @@ export class UsersService {
 
     // @ts-ignore
     return result.sort((a,b) => b.id - a.id);
+  }
+
+  findOneById(id: number): Promise<User> {
+    return this.userModel.findOne({
+      where: {
+        id,
+      },
+      raw: true,
+    });
   }
 
   findOne(username: string): Promise<User> {
@@ -60,4 +62,38 @@ export class UsersService {
   async findByUsername(username: string): Promise<User | undefined> {
     return this.findOne(username);
   }
+
+  async update(updateUserData: IUpdateUserData, userId: number): Promise<Response> {
+    let data = {}
+    if(updateUserData.password) {
+      data = {...data, password: updateUserData.password};
+    }
+    if(updateUserData.username) {
+      data = {...data, username: updateUserData.username};
+    }
+    const response = await this.userModel.update({...data},
+      {
+        where: {
+          id: userId,
+        },
+      }).catch((error) => {
+      throw new BadRequestException({
+        status: 'error',
+        message: ['Данные не сохранены'],
+        statusCode: HttpStatus.BAD_REQUEST,
+        error: error.message,
+      })
+    });
+
+    return {
+      status: 'success',
+      statusCode: HttpStatus.OK,
+      message: ['Запись обновлена']
+    }
+  }
+}
+
+interface IUpdateUserData {
+  username?: string;
+  password?: string;
 }

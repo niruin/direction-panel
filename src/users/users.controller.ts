@@ -1,11 +1,11 @@
 import {ApiOkResponse, ApiTags} from '@nestjs/swagger';
-import {Body, Controller, Get, HttpCode, HttpStatus, Post} from '@nestjs/common';
+import {Body, Controller, Get, HttpCode, HttpStatus, Post, Put, Request} from '@nestjs/common';
 
 import {UsersService} from './users.service';
 import {CreateUserDto} from './dto/create-user.dto';
 import {UserResponse, UserResponseType} from './interfaces/users.interface';
-import {Roles} from '../auth/decorator/roles.decorator';
-import {Role} from '../auth/enum/role.enum';
+import {Response} from '../interfaces/interface';
+import {UpdateUsernameDto} from '../auth/dto/update-username.dto';
 
 @ApiTags('Users')
 @Controller('users')
