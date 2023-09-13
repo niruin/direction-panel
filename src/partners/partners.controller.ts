@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Get, Param, Post, Put} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Post, Put, Request} from '@nestjs/common';
 import {ApiOkResponse, ApiTags} from '@nestjs/swagger';
 
 import {CreatePartnerDto} from './dto/create-partner.dto';
@@ -20,13 +20,13 @@ export class PartnersController {
   }
 
   @Post('/add')
-  create(@Body() createPartnerDto: CreatePartnerDto): Promise<PartnersCreateResponse> {
-    return this.partnersService.create(createPartnerDto);
+  create(@Request() req, @Body() createPartnerDto: CreatePartnerDto): Promise<PartnersCreateResponse> {
+    return this.partnersService.create(createPartnerDto, req.user.username);
   }
 
   @Put('/update')
-  update(@Body() updatePartnerDto: UpdatePartnerDto): Promise<Response> {
-    return this.partnersService.update(updatePartnerDto);
+  update(@Request() req, @Body() updatePartnerDto: UpdatePartnerDto): Promise<Response> {
+    return this.partnersService.update(updatePartnerDto, req.user.username);
   }
 
   @ApiOkResponse({type: PartnersAllResponse})
@@ -42,7 +42,7 @@ export class PartnersController {
   }
 
   @Delete('/remove/:id')
-  remove(@Param('id') id: string): Promise<PartnersRemoveResponse> {
-    return this.partnersService.remove(id);
+  remove(@Request() req, @Param('id') id: string): Promise<PartnersRemoveResponse> {
+    return this.partnersService.remove(id, req.user.username);
   }
 }

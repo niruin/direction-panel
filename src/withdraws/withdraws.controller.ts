@@ -1,5 +1,5 @@
 import {ApiOkResponse, ApiTags} from '@nestjs/swagger';
-import {Body, Controller, Get, Put} from '@nestjs/common';
+import {Body, Controller, Get, Put, Request} from '@nestjs/common';
 
 import {WithdrawsService} from './withdraws.service';
 import {WithdrawsAllResponse} from './interfaces/withdraws.interface';
@@ -20,13 +20,13 @@ export class WithdrawsController {
 
   @ApiOkResponse({type: Response})
   @Put('/update-status')
-  updateStatus(@Body() updateStatusWithdrawsDto: UpdateStatusWithdrawsDto): Promise<Response> {
-    return  this.withdrawsService.updateStatus(updateStatusWithdrawsDto);
+  updateStatus(@Request() req,@Body() updateStatusWithdrawsDto: UpdateStatusWithdrawsDto): Promise<Response> {
+    return  this.withdrawsService.updateStatus(updateStatusWithdrawsDto, req.user.username);
   }
 
   @ApiOkResponse({type: Response})
   @Put('/execute')
-  execute(@Body() executeWithdrawsDto: ExecuteWithdrawsDto): Promise<Response> {
-    return this.withdrawsService.execute(executeWithdrawsDto);
+  execute(@Request() req, @Body() executeWithdrawsDto: ExecuteWithdrawsDto): Promise<Response> {
+    return this.withdrawsService.execute(executeWithdrawsDto, req.user.username);
   }
 }

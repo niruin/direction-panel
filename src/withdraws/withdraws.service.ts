@@ -35,7 +35,7 @@ export class WithdrawsService {
     }
   }
 
-  async execute(executeWithdrawsDto: IExecuteWithdrawsDto): Promise<Response> {
+  async execute(executeWithdrawsDto: IExecuteWithdrawsDto, username: string): Promise<Response> {
     const {id, ...restData} = executeWithdrawsDto;
     const data = {
       ...restData,
@@ -62,7 +62,7 @@ export class WithdrawsService {
       date: new Date(),
       withdrawId: id,
       event: EnumStatus.send,
-      employee: '',
+      employee: username,
       other: ''
     }
     this.withdrawLogsService.create(logData)
@@ -74,7 +74,7 @@ export class WithdrawsService {
     }
   }
 
-  async updateStatus(executeWithdrawsDto: IUpdateStatusWithdrawsDto): Promise<Response> {
+  async updateStatus(executeWithdrawsDto: IUpdateStatusWithdrawsDto, username: string): Promise<Response> {
     const cancelReason = executeWithdrawsDto.status === EnumStatus.canceled ? EnumCancelReason.operator : null;
     const {id, ...rest} = executeWithdrawsDto;
     const response = await this.withdrawsModel.update({...rest, cancelReason},
@@ -95,7 +95,7 @@ export class WithdrawsService {
       date: new Date(),
       withdrawId: id,
       event: executeWithdrawsDto.status,
-      employee: '',
+      employee: username,
       other: ''
     }
 

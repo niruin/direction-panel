@@ -18,10 +18,10 @@ export class PartnerLogsService {
   ) {
   }
 
-  async createWithDetails(beforeUpdateUser: ICreatePartner, afterUpdateUser: IPartner, event: LogEvent): Promise<PartnersCreateResponse> {
+  async createWithDetails(beforeUpdateUser: ICreatePartner, afterUpdateUser: IPartner, event: LogEvent, employee: string): Promise<PartnersCreateResponse> {
     const logData: IPartnerLog = {
       date: new Date(),
-      employee: '',
+      employee,
       event: event,
       other: '',
       partnerId: afterUpdateUser.id,

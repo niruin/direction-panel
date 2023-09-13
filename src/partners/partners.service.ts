@@ -21,12 +21,12 @@ export class PartnersService {
     private readonly partnerLogsService: PartnerLogsService,
   ) {}
 
-  async create(createPartnerDto: CreatePartnerDto): Promise<PartnersCreateResponse> {
+  async create(createPartnerDto: CreatePartnerDto, username: string): Promise<PartnersCreateResponse> {
     const response = await this.partnerModel.create({...createPartnerDto});
 
     const logData: CreatePartnerLogDto = {
       date: new Date(),
-      employee: '',
+      employee: username,
       event: 'Добавлен',
       other: '',
       partnerId: response.dataValues.id,
@@ -45,7 +45,7 @@ export class PartnersService {
     }
   }
 
-  async update(updatePartnerDto: UpdatePartnerDto): Promise<PartnersUpdateResponse> {
+  async update(updatePartnerDto: UpdatePartnerDto, username: string): Promise<PartnersUpdateResponse> {
     const beforeUpdateUser = await this.findOne(String(updatePartnerDto.id));
     const response = await this.partnerModel.update({...updatePartnerDto},
       {
@@ -63,7 +63,7 @@ export class PartnersService {
 
     const afterUpdateUser = await this.findOne(String(updatePartnerDto.id));
 
-    this.partnerLogsService.createWithDetails(beforeUpdateUser.dataValues, afterUpdateUser.dataValues, 'Изменен')
+    this.partnerLogsService.createWithDetails(beforeUpdateUser.dataValues, afterUpdateUser.dataValues, 'Изменен', username)
 
     const effectedCount = response[0];
     const msg = Boolean(effectedCount) ? 'Изменения сохранены' : 'Данные не изменены';
@@ -104,7 +104,7 @@ export class PartnersService {
     });
   }
 
-  async remove(id: string): Promise<PartnersRemoveResponse> {
+  async remove(id: string, username: string): Promise<PartnersRemoveResponse> {
     const user = await this.findOne(id);
 
     if (!user) {
@@ -120,7 +120,7 @@ export class PartnersService {
 
     const logData: CreatePartnerLogDto = {
       date: new Date(),
-      employee: '',
+      employee: username,
       event: 'Удален',
       other: '',
       partnerId: user.id,
