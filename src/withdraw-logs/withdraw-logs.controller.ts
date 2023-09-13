@@ -1,4 +1,4 @@
-import {Controller, Get} from '@nestjs/common';
+import {Controller, Get, Query} from '@nestjs/common';
 import {ApiOkResponse, ApiTags} from '@nestjs/swagger';
 
 import {WithdrawLogsService} from './withdraw-logs.service';
@@ -11,8 +11,8 @@ export class WithdrawsLogsController {
   }
 
   @ApiOkResponse({type: [WithdrawLogsResponseData]})
-  @Get('/all')
-  findAll(): Promise<WithdrawLogsResponseData[]> {
-    return this.withdrawLogService.findAll();
+  @Get('/list')
+  findAll(@Query() query): Promise<WithdrawLogsResponseData[]> {
+    return this.withdrawLogService.findAll(query.withdrawId);
   }
 }

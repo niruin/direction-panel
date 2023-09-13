@@ -24,8 +24,15 @@ export class WithdrawLogsService {
     }
   }
 
-  async findAll(): Promise<WithdrawLogsResponseData[]> {
-    const response = await this.withdrawLogModel.findAll({raw: true}).catch((error) => {
+  async findAll(withdrawId?: string): Promise<WithdrawLogsResponseData[]> {
+    let options = {};
+    if(withdrawId) {
+      options = {...options,  where: {
+          withdrawId: Number(withdrawId),
+        },}
+    }
+
+    const response = await this.withdrawLogModel.findAll({...options, raw: true}).catch((error) => {
       throw new BadRequestException({
         status: 'error',
         message: ['Не удалось загрузить данные'],
@@ -35,12 +42,5 @@ export class WithdrawLogsService {
     });
 
     return response.sort((a,b) => b.id - a.id)
-
-    // return {
-    //   status: 'success',
-    //   message: ['Данные получены'],
-    //   statusCode: HttpStatus.OK,
-    //   data: response
-    // }
   }
 }

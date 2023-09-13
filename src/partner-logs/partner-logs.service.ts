@@ -54,8 +54,14 @@ export class PartnerLogsService {
     }
   }
 
-  async findAll(): Promise<PartnerLogsAllResponse> {
-    const response = await this.partnerLogModel.findAll({raw: true}).catch((error) => {
+  async findAll(partnerId?: string): Promise<PartnerLogsAllResponse> {
+    let options = {};
+    if(partnerId) {
+      options = {...options,  where: {
+          partnerId: Number(partnerId),
+        },}
+    }
+    const response = await this.partnerLogModel.findAll({...options, raw: true}).catch((error) => {
       throw new BadRequestException({
         status: 'error',
         message: ['Не удалось загрузить данные'],

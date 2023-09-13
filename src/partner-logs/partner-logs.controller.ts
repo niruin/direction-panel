@@ -1,4 +1,4 @@
-import {Controller, Get} from '@nestjs/common';
+import {Controller, Get, Param, Query} from '@nestjs/common';
 import {ApiOkResponse, ApiTags} from '@nestjs/swagger';
 
 import {PartnerLogsAllResponse} from './interfaces/partner-logs.interface';
@@ -11,8 +11,8 @@ export class PartnerLogsController {
   }
 
   @ApiOkResponse({type: PartnerLogsAllResponse})
-  @Get('/all')
-  findAll(): Promise<PartnerLogsAllResponse> {
-    return this.partnerLogService.findAll();
+  @Get('/list')
+  findAll(@Query() query): Promise<PartnerLogsAllResponse> {
+    return this.partnerLogService.findAll(query.partnerId);
   }
 }
