@@ -11,13 +11,14 @@ import {WithdrawLogsModule} from './withdraw-logs/withdraw-logs.module';
 import {APP_GUARD} from '@nestjs/core';
 import {AuthGuard} from './auth/guard/auth.guard';
 import {RolesGuard} from './auth/guard/roles.guard';
+import {TokensModule} from './tokens/tokens.module';
 
 @Module({
   imports: [
     SequelizeModule.forRoot({
       dialect: 'mysql',
-      host: '128.72.71.122',
-      // host: '0.0.0.0',
+      // host: '128.72.71.122',
+      host: '0.0.0.0',
       port: 3306,
       username: 'root',
       password: 'root',
@@ -37,6 +38,7 @@ import {RolesGuard} from './auth/guard/roles.guard';
     WithdrawLogsModule,
     UsersModule,
     AuthModule,
+    TokensModule
   ],
   providers: [
     {
