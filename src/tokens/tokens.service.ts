@@ -6,6 +6,9 @@ import {Token} from './models/token.model';
 import {TokensAllResponse} from './interfaces/tokens.interface';
 import {UpdateTokenDto} from './dto/update-token.dto';
 import {CreateTokenDto} from './dto/create-token.dto';
+import {PartnersRemoveResponse} from '../partners/interfaces/partners.interface';
+import {CreatePartnerLogDto} from '../partner-logs/dto/create-partner-log.dto';
+import {Partner} from '../partners/models/partner.model';
 
 @Injectable()
 export class TokensService {
@@ -13,6 +16,14 @@ export class TokensService {
     @InjectModel(Token)
     private readonly tokensModel: typeof Token
   ) {
+  }
+
+  findOne(id: string): Promise<Token> {
+    return this.tokensModel.findOne({
+      where: {
+        id,
+      },
+    });
   }
 
   async findAll(): Promise<TokensAllResponse> {
@@ -65,6 +76,27 @@ export class TokensService {
       status: 'success',
       statusCode: HttpStatus.OK,
       message: ['Запись добавлена']
+    }
+  }
+
+  async remove(id: string): Promise<Response> {
+    const token = await this.findOne(id);
+
+    if (!token) {
+      throw new BadRequestException({
+        status: 'error',
+        message: ['Элемент не удален'],
+        statusCode: HttpStatus.BAD_REQUEST,
+        error: `Элемент с идентификатором '${id}' не найден`,
+      })
+    }
+
+    await token.destroy();
+
+    return {
+      status: 'success',
+      message: ['Элемент удален'],
+      statusCode: HttpStatus.OK,
     }
   }
 }

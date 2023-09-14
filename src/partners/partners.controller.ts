@@ -9,7 +9,7 @@ import {Response} from '../interfaces/interface';
 import {
   PartnerResponseData,
   PartnersAllResponse,
-  PartnersCreateResponse,
+  PartnersCreateResponse, PartnersDictionaryResponse,
   PartnersRemoveResponse
 } from './interfaces/partners.interface';
 
@@ -33,6 +33,12 @@ export class PartnersController {
   @Get('/all')
   findAll(): Promise<PartnersAllResponse> {
     return this.partnersService.findAll();
+  }
+
+  @ApiOkResponse({type: PartnersAllResponse})
+  @Get('/dictionary')
+  dictionaryList(): Promise<PartnersDictionaryResponse> {
+    return this.partnersService.dictionaryList();
   }
 
   @ApiOkResponse({type: PartnerResponseData})

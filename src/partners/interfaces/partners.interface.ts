@@ -62,3 +62,15 @@ export class PartnersAllResponse extends Response {
   @ApiProperty({type: [PartnerResponseData]})
   data: PartnerResponseData[];
 }
+
+export class PartnerDictionaryResponseData implements Pick<IPartner, 'id' | 'partnerName'> {
+  @ApiProperty({example: 1})
+  id: number;
+  @ApiProperty({example: 'PartnerName'})
+  partnerName: string;
+}
+
+export class PartnersDictionaryResponse extends Response {
+  @ApiProperty({type: [PartnerDictionaryResponseData]})
+  data: PartnerDictionaryResponseData[];
+}

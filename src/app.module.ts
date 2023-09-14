@@ -12,6 +12,7 @@ import {APP_GUARD} from '@nestjs/core';
 import {AuthGuard} from './auth/guard/auth.guard';
 import {RolesGuard} from './auth/guard/roles.guard';
 import {TokensModule} from './tokens/tokens.module';
+import {BotsModule} from './bots/bots.module';
 
 @Module({
   imports: [
@@ -38,7 +39,8 @@ import {TokensModule} from './tokens/tokens.module';
     WithdrawLogsModule,
     UsersModule,
     AuthModule,
-    TokensModule
+    TokensModule,
+    BotsModule,
   ],
   providers: [
     {

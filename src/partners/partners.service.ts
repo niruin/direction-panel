@@ -2,11 +2,11 @@ import {BadRequestException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/sequelize';
 
 import {CreatePartnerDto} from './dto/create-partner.dto';
-import {Partner} from './models/partner.model';
+import {IPartner, Partner} from './models/partner.model';
 import {UpdatePartnerDto} from './dto/update-partner.dto';
 import {
   PartnersAllResponse,
-  PartnersCreateResponse,
+  PartnersCreateResponse, PartnersDictionaryResponse,
   PartnersRemoveResponse,
   PartnersUpdateResponse
 } from './interfaces/partners.interface';
@@ -93,6 +93,24 @@ export class PartnersService {
       message: ['Данные получены'],
       statusCode: HttpStatus.OK,
       data: response.sort((a,b) => b.id - a.id)
+    }
+  }
+
+  async dictionaryList(): Promise<PartnersDictionaryResponse> {
+    const response = await this.partnerModel.findAll({raw: true}).catch((error) => {
+      throw new BadRequestException({
+        status: 'error',
+        message: ['Не удалось загрузить данные'],
+        statusCode: HttpStatus.BAD_REQUEST,
+        error: error.message,
+      })
+    });
+
+    return {
+      status: 'success',
+      message: ['Данные получены'],
+      statusCode: HttpStatus.OK,
+      data: response.sort((a,b) => b.id - a.id).map(({id, partnerName}: IPartner) => ({id, partnerName }))
     }
   }
 
