@@ -7,6 +7,8 @@ import {BotsAllResponse} from './interfaces/bots.interface';
 import {UpdateBotDto} from './dto/update-bot.dto';
 import {CreateBotDto} from './dto/create-bot.dto';
 
+const Op = require('sequelize').Op;
+
 @Injectable()
 export class BotsService {
   constructor(
@@ -15,8 +17,13 @@ export class BotsService {
   ) {
   }
 
-  async findAll(): Promise<BotsAllResponse> {
-    const response = await this.botsModel.findAll({raw: true}).catch((error) => {
+  async findAll( status:'active' | 'issued'): Promise<BotsAllResponse> {
+    const options = status === 'active' ? {where: {partnerId: {[Op.ne]: null}}}: {
+      where: {
+        partnerId: null
+      }
+    }
+    const response = await this.botsModel.findAll({...options, raw: true}).catch((error) => {
       throw new BadRequestException({
         status: 'error',
         message: ['Не удалось загрузить данные'],

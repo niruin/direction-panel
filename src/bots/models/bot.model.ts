@@ -1,4 +1,4 @@
-import {Column, Model, Table} from 'sequelize-typescript';
+import {Column, CreatedAt, Model, Table} from 'sequelize-typescript';
 import {DataTypes} from 'sequelize';
 
 export interface IBot {
@@ -7,7 +7,7 @@ export interface IBot {
   token: string;
 }
 
-@Table
+@Table({timestamps: true, createdAt: true})
 export class Bot extends Model implements IBot {
   @Column({ type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true})
   id: number;
@@ -15,4 +15,5 @@ export class Bot extends Model implements IBot {
   partnerId: number;
   @Column
   token: string;
+
 }
