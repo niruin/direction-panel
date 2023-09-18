@@ -13,13 +13,14 @@ import {AuthGuard} from './auth/guard/auth.guard';
 import {RolesGuard} from './auth/guard/roles.guard';
 import {TokensModule} from './tokens/tokens.module';
 import {BotsModule} from './bots/bots.module';
+import {BotLogsModule} from './bot-logs/bot-logs.module';
 
 @Module({
   imports: [
     SequelizeModule.forRoot({
       dialect: 'mysql',
-      // host: '128.72.71.122',
-      host: '80.78.24.127',
+      host: '128.72.71.122',
+      // host: '80.78.24.127',
       // host: '0.0.0.0',
       port: 3306,
       username: 'root',
@@ -42,6 +43,7 @@ import {BotsModule} from './bots/bots.module';
     AuthModule,
     TokensModule,
     BotsModule,
+    BotLogsModule
   ],
   providers: [
     {

@@ -1,5 +1,6 @@
-import { Column, Model, Table } from 'sequelize-typescript';
+import { Column, Model, Table, HasMany } from 'sequelize-typescript';
 import {DataTypes} from 'sequelize';
+import {Bot} from '../../bots/models/bot.model';
 
 export interface IPartner {
   id: number;
@@ -39,4 +40,7 @@ export class Partner extends Model implements IPartner {
   countBotLimit: number;
   @Column
   botLimit: number;
+
+  @HasMany(() => Bot)
+  bot: Bot[];
 }

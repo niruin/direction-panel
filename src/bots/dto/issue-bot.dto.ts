@@ -1,18 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import {IBot} from '../models/bot.model';
 
-export class UpdateBotDto {
+export class IssueBotDto {
   @ApiProperty({ example: 1 })
   readonly id: number;
-
   @ApiProperty({ example: 1 })
   readonly partnerId: number;
-
   @ApiProperty({ example: 'botName' })
-  @IsNotEmpty()
-  readonly botName: string;
-
-  @ApiProperty({ example: 'token000' })
-  @IsNotEmpty()
-  readonly token: string;
+  botName: string;
+  @ApiProperty({ example: 'token' })
+  token: string;
 }
