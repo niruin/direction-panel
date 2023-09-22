@@ -7,6 +7,7 @@ import {IExecuteWithdrawsDto, IUpdateStatusWithdrawsDto} from './dto/execute-wit
 import {Response} from '../interfaces/interface'
 import {WithdrawLogsService} from '../withdraw-logs/withdraw-logs.service';
 import {CreateWithdrawLogDto} from '../withdraw-logs/dto/create-withdraw-log.dto';
+import {Partner} from '../partners/models/partner.model';
 
 @Injectable()
 export class WithdrawsService {
@@ -18,7 +19,16 @@ export class WithdrawsService {
   }
 
   async findAll(): Promise<WithdrawsAllResponse> {
-    const response = await this.withdrawsModel.findAll({raw: true}).catch((error) => {
+    const options = {
+      include: [
+        {
+          model: Partner,
+          attributes: ['partnerName'],
+        }
+      ],
+      raw: true,
+    }
+    const response = await this.withdrawsModel.findAll(options).catch((error) => {
       throw new BadRequestException({
         status: 'error',
         message: ['Не удалось загрузить данные'],
@@ -31,7 +41,12 @@ export class WithdrawsService {
       status: 'success',
       message: ['Данные получены'],
       statusCode: HttpStatus.OK,
-      data: response.sort((a,b) => b.id - a.id)
+      data: response.sort((a, b) => b.id - a.id).map((item) => (
+        {
+          ...item,
+          partnerName: item['partner.partnerName']
+        }
+      ))
     }
   }
 

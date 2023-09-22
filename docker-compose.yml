@@ -2,13 +2,13 @@ version: "3"
 
 services:
   mysql:
-    image: mysql:8
+    image: mysql:8.0.34
     restart: always
     volumes:
       - mysqldb:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: test
+      MYSQL_ROOT_PASSWORD: Rjirf3522
+      MYSQL_DATABASE: panelDatabase
     ports:
       - "3306:3306"
 

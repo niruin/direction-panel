@@ -19,13 +19,13 @@ import {BotLogsModule} from './bot-logs/bot-logs.module';
   imports: [
     SequelizeModule.forRoot({
       dialect: 'mysql',
-      host: '128.72.71.122',
+      // host: '128.72.71.122',
       // host: '80.78.24.127',
-      // host: '0.0.0.0',
+      host: '0.0.0.0',
       port: 3306,
       username: 'root',
-      password: 'root',
-      database: 'test',
+      password: 'Rjirf3522',
+      database: 'panelDatabase',
       autoLoadModels: true,
       synchronize: true,
       define: {

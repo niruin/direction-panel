@@ -1,6 +1,7 @@
 import { Column, Model, Table, HasMany } from 'sequelize-typescript';
 import {DataTypes} from 'sequelize';
 import {Bot} from '../../bots/models/bot.model';
+import {Withdraws} from '../../withdraws/models/withdraws.model';
 
 export interface IPartner {
   id: number;
@@ -43,4 +44,6 @@ export class Partner extends Model implements IPartner {
 
   @HasMany(() => Bot)
   bot: Bot[];
+  @HasMany(() => Withdraws)
+  withdraw: Withdraws[];
 }

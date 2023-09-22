@@ -14,7 +14,9 @@ export class WithdrawsAllResponseData implements IWithdraws {
   @ApiProperty({example: 'tobankcard'})
   typeWithdraw: EnumTypeWithdraw;
   @ApiProperty({example: 1})
-  partnerid: number;
+  partnerId: number;
+  @ApiProperty({example: 'partnerName'})
+  partnerName: string;
   @ApiProperty({example: 'sending'})
   status: EnumStatus;
   @ApiProperty({example: 1})

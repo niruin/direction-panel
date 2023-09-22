@@ -1,5 +1,6 @@
-import {Column, Model, Table, DataType} from 'sequelize-typescript';
+import {Column, Model, Table, DataType, ForeignKey, BelongsTo} from 'sequelize-typescript';
 import {DataTypes} from 'sequelize';
+import {Partner} from '../../partners/models/partner.model';
 
 export enum EnumTypeWithdraw {
   tobankcard = 'tobankcard',
@@ -24,7 +25,7 @@ export interface IWithdraws {
   cryptoamount: number;
   cryptowallet: string;
   typeWithdraw: EnumTypeWithdraw;
-  partnerid: number;
+  partnerId: number;
   status: EnumStatus;
   exchangeRate: number;
   cancelReason: EnumCancelReason | null;
@@ -49,8 +50,6 @@ export class Withdraws extends Model implements IWithdraws {
     type: DataType.ENUM(...Object.values(EnumTypeWithdraw)),
   })
   typeWithdraw: EnumTypeWithdraw;
-  @Column
-  partnerid: number;
   @Column({
     type: DataType.ENUM(...Object.values(EnumStatus)),
   })
@@ -72,4 +71,11 @@ export class Withdraws extends Model implements IWithdraws {
   insertTime: Date;
   @Column
   sendTime: Date;
+
+  @ForeignKey(() => Partner)
+  @Column
+  partnerId: number;
+
+  @BelongsTo(() => Partner)
+  partner: Partner;
 }
