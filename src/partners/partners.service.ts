@@ -29,7 +29,7 @@ export class PartnersService {
       employee: username,
       event: 'Добавлен',
       other: '',
-      partnerId: response.dataValues.id,
+      partnerId: response.dataValues.partnerid,
       partnerName: response.dataValues.partnerName,
     }
 
@@ -78,7 +78,7 @@ export class PartnersService {
     }
   }
 
-  async findAll(): Promise<PartnersAllResponse> {
+  async findAll(pageNumber?: string): Promise<PartnersAllResponse> {
     const response = await this.partnerModel.findAll({raw: true}).catch((error) => {
       throw new BadRequestException({
         status: 'error',

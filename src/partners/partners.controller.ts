@@ -31,7 +31,7 @@ export class PartnersController {
 
   @ApiOkResponse({type: PartnersAllResponse})
   @Get('/all')
-  findAll(): Promise<PartnersAllResponse> {
+  findAll(@Param('page') page: string): Promise<PartnersAllResponse> {
     return this.partnersService.findAll();
   }
 
@@ -42,8 +42,8 @@ export class PartnersController {
   }
 
   @ApiOkResponse({type: PartnerResponseData})
-  @Get(':id')
-  findOne(@Param('id') id: string): Promise<Partner> {
+  @Get(':partnerId')
+  findOne(@Param('partnerId') id: string): Promise<Partner> {
     return this.partnersService.findOne(id);
   }
 

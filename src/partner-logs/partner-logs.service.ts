@@ -56,6 +56,7 @@ export class PartnerLogsService {
 
   async findAll(partnerId?: string): Promise<PartnerLogsAllResponse> {
     let options = {};
+    console.log('****',partnerId);
     if(partnerId) {
       options = {...options,  where: {
           partnerId: Number(partnerId),
