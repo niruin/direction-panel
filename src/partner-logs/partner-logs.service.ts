@@ -24,7 +24,7 @@ export class PartnerLogsService {
       employee,
       event: event,
       other: '',
-      partnerId: afterUpdateUser.id,
+      partnerId: afterUpdateUser.partnerid,
       partnerName: beforeUpdateUser.partnerName,
     }
     const response = await this.partnerLogModel.create({...logData});

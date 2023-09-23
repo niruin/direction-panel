@@ -11,7 +11,9 @@ export interface IWithdrawLog {
   date: Date;
 }
 
-@Table
+@Table({
+  tableName: 'zs_withdraws_logs'
+})
 export class WithdrawLog extends Model implements IWithdrawLog {
   @Column({ type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true})
   id: number;

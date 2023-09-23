@@ -1,10 +1,10 @@
 import {Response} from '../../interfaces/interface';
 import {ApiProperty} from '@nestjs/swagger';
-import {EnumCancelReason, EnumStatus, EnumTypeWithdraw, IWithdraws} from '../models/withdraws.model';
+import {EnumCancelReason, EnumStatus, EnumTypeWithdraw, IWithdraw} from '../models/withdraws.model';
 
-export class WithdrawsAllResponseData implements IWithdraws {
+export class WithdrawsAllResponseData implements IWithdraw {
   @ApiProperty({example: 1})
-  id: number;
+  withdrawid: number;
   @ApiProperty({example: 1})
   fiatamount: number;
   @ApiProperty({example: 1})

@@ -16,7 +16,9 @@ export interface IPartnerLogDetails extends ICreatePartner {
   partnerLogId: number;
 }
 
-@Table
+@Table({
+  tableName: 'zs_partners_logs-details'
+})
 export class PartnerLogDetails extends Model implements IPartnerLogDetails {
   @Column({ type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true})
   id: number;

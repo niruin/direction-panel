@@ -1,4 +1,4 @@
-import {EnumCancelReason, EnumStatus, EnumTypeWithdraw, IWithdraws} from '../../withdraws/models/withdraws.model';
+import {EnumCancelReason, EnumStatus, EnumTypeWithdraw, IWithdraw} from '../../withdraws/models/withdraws.model';
 import {ApiProperty} from '@nestjs/swagger';
 import {Response} from '../../interfaces/interface';
 import {IToken} from '../models/token.model';
@@ -7,7 +7,7 @@ export class TokenResponseData implements IToken {
   @ApiProperty({example: 1})
   id: number;
   @ApiProperty({example: 1})
-  partnerId: number;
+  partnerid: number;
   @ApiProperty({example: 'token'})
   token: string;
 }

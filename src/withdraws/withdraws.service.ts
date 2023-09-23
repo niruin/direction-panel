@@ -1,7 +1,7 @@
 import {BadRequestException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/sequelize';
 
-import {EnumCancelReason, EnumStatus, Withdraws} from './models/withdraws.model';
+import {EnumCancelReason, EnumStatus, Withdraw} from './models/withdraws.model';
 import {WithdrawsAllResponse} from './interfaces/withdraws.interface';
 import {IExecuteWithdrawsDto, IUpdateStatusWithdrawsDto} from './dto/execute-withdraws.dto';
 import {Response} from '../interfaces/interface'
@@ -12,8 +12,8 @@ import {Partner} from '../partners/models/partner.model';
 @Injectable()
 export class WithdrawsService {
   constructor(
-    @InjectModel(Withdraws)
-    private readonly withdrawsModel: typeof Withdraws,
+    @InjectModel(Withdraw)
+    private readonly withdrawsModel: typeof Withdraw,
     private readonly withdrawLogsService: WithdrawLogsService
   ) {
   }
@@ -51,7 +51,7 @@ export class WithdrawsService {
   }
 
   async execute(executeWithdrawsDto: IExecuteWithdrawsDto, username: string): Promise<Response> {
-    const {id, ...restData} = executeWithdrawsDto;
+    const {withdrawid, ...restData} = executeWithdrawsDto;
     const data = {
       ...restData,
       status: EnumStatus.send,
@@ -61,7 +61,7 @@ export class WithdrawsService {
     const response = await this.withdrawsModel.update({...data},
       {
         where: {
-          id: id,
+          withdrawid: withdrawid,
         },
       }).catch((error) => {
       throw new BadRequestException({
@@ -75,7 +75,7 @@ export class WithdrawsService {
 
     const logData: CreateWithdrawLogDto = {
       date: new Date(),
-      withdrawId: id,
+      withdrawId: withdrawid,
       event: EnumStatus.send,
       employee: username,
       other: ''
@@ -91,11 +91,11 @@ export class WithdrawsService {
 
   async updateStatus(executeWithdrawsDto: IUpdateStatusWithdrawsDto, username: string): Promise<Response> {
     const cancelReason = executeWithdrawsDto.status === EnumStatus.canceled ? EnumCancelReason.operator : null;
-    const {id, ...rest} = executeWithdrawsDto;
+    const {withdrawid, ...rest} = executeWithdrawsDto;
     const response = await this.withdrawsModel.update({...rest, cancelReason},
       {
         where: {
-          id: executeWithdrawsDto.id,
+          withdrawid: executeWithdrawsDto.withdrawid,
         },
       }).catch((error) => {
       throw new BadRequestException({
@@ -108,7 +108,7 @@ export class WithdrawsService {
 
     const logData: CreateWithdrawLogDto = {
       date: new Date(),
-      withdrawId: id,
+      withdrawId: withdrawid,
       event: executeWithdrawsDto.status,
       employee: username,
       other: ''

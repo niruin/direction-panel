@@ -8,7 +8,9 @@ export interface IBotLog {
   partnerId: number;
 }
 
-@Table
+@Table({
+  tableName: 'zs_partners_bots_logs'
+})
 export class BotLog extends Model implements IBotLog {
   @Column({ type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true})
   id: number;

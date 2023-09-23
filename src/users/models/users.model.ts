@@ -8,7 +8,9 @@ export interface IUser {
   role: EnumUserRole;
 }
 
-@Table
+@Table({
+  tableName: 'zs_users'
+})
 export class User extends Model implements IUser {
   @Column({ type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true})
   id: number;

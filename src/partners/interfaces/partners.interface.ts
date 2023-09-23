@@ -1,7 +1,7 @@
 import {ApiProperty} from '@nestjs/swagger';
 
 import {Response} from '../../interfaces/interface';
-import {IPartner} from '../models/partner.model';
+import {EnumCurrency, IPartner} from '../models/partner.model';
 
 class PartnersCreateResponseData {
   @ApiProperty({example: 'success'})
@@ -35,15 +35,15 @@ export class PartnersRemoveResponse extends Response {
 
 export class PartnerResponseData implements IPartner {
   @ApiProperty({example: 1})
-  id: number;
+  partnerid: number;
   @ApiProperty({example: 10})
   fiatBalance: number;
   @ApiProperty({example: '/some-url'})
   urlPanel: string;
   @ApiProperty({example: 'partner name example'})
   partnerName: string;
-  @ApiProperty({example: 'RUB'})
-  currency: string;
+  @ApiProperty({example: EnumCurrency.RUB})
+  currency: EnumCurrency;
   @ApiProperty({example: 1.5})
   freeRate: number;
   @ApiProperty({example: 20})
@@ -63,9 +63,9 @@ export class PartnersAllResponse extends Response {
   data: PartnerResponseData[];
 }
 
-export class PartnerDictionaryResponseData implements Pick<IPartner, 'id' | 'partnerName'> {
+export class PartnerDictionaryResponseData implements Pick<IPartner, 'partnerid' | 'partnerName'> {
   @ApiProperty({example: 1})
-  id: number;
+  partnerid: number;
   @ApiProperty({example: 'PartnerName'})
   partnerName: string;
 }

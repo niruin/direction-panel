@@ -19,8 +19,8 @@ export enum EnumCancelReason {
   operator = 'operator',
 }
 
-export interface IWithdraws {
-  id: number;
+export interface IWithdraw {
+  withdrawid: number;
   fiatamount: number;
   cryptoamount: number;
   cryptowallet: string;
@@ -36,15 +36,19 @@ export interface IWithdraws {
   sendTime: Date;
 }
 
-@Table
-export class Withdraws extends Model implements IWithdraws {
+@Table(
+  {
+    tableName: 'zs_withdraws'
+  }
+)
+export class Withdraw extends Model implements IWithdraw {
   @Column({ type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true})
-  id: number;
-  @Column
+  withdrawid: number;
+  @Column({ type: DataTypes.DECIMAL(20, 10)})
   fiatamount: number;
-  @Column
+  @Column({ type: DataTypes.DECIMAL(20, 10)})
   cryptoamount: number;
-  @Column
+  @Column({ type: DataTypes.STRING})
   cryptowallet: string;
   @Column({
     type: DataType.ENUM(...Object.values(EnumTypeWithdraw)),
@@ -54,22 +58,22 @@ export class Withdraws extends Model implements IWithdraws {
     type: DataType.ENUM(...Object.values(EnumStatus)),
   })
   status: EnumStatus;
-  @Column
+  @Column({ type: DataTypes.DECIMAL(20, 10)})
   exchangeRate: number;
   @Column({
     type: DataType.ENUM(...Object.values(EnumCancelReason)),
     defaultValue: null,
   })
   cancelReason: EnumCancelReason | null;
-  @Column
+  @Column({ type: DataTypes.STRING})
   txid: string;
-  @Column
+  @Column({ type: DataTypes.INTEGER})
   oldBalanceClient: number;
-  @Column
+  @Column({ type: DataTypes.INTEGER})
   newBalanceClient: number;
-  @Column
+  @Column({ type: DataTypes.DATE})
   insertTime: Date;
-  @Column
+  @Column({ type: DataTypes.DATE})
   sendTime: Date;
 
   @ForeignKey(() => Partner)

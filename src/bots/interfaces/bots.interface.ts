@@ -7,7 +7,7 @@ export class BotResponseData implements IBot {
   @ApiProperty({example: 1})
   id: number;
   @ApiProperty({example: 1})
-  partnerId: number;
+  partnerID: number;
   @ApiProperty({example: 'token'})
   token: string;
   @ApiProperty({example: 'partnerName'})

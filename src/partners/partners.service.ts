@@ -46,11 +46,11 @@ export class PartnersService {
   }
 
   async update(updatePartnerDto: UpdatePartnerDto, username: string): Promise<PartnersUpdateResponse> {
-    const beforeUpdateUser = await this.findOne(String(updatePartnerDto.id));
+    const beforeUpdateUser = await this.findOne(String(updatePartnerDto.partnerid));
     const response = await this.partnerModel.update({...updatePartnerDto},
       {
         where: {
-          id: updatePartnerDto.id,
+          partnerid: updatePartnerDto.partnerid,
         },
       }).catch((error) => {
       throw new BadRequestException({
@@ -61,7 +61,7 @@ export class PartnersService {
       })
     });
 
-    const afterUpdateUser = await this.findOne(String(updatePartnerDto.id));
+    const afterUpdateUser = await this.findOne(String(updatePartnerDto.partnerid));
 
     this.partnerLogsService.createWithDetails(beforeUpdateUser.dataValues, afterUpdateUser.dataValues, 'Изменен', username)
 
@@ -110,14 +110,14 @@ export class PartnersService {
       status: 'success',
       message: ['Данные получены'],
       statusCode: HttpStatus.OK,
-      data: response.sort((a,b) => b.id - a.id).map(({id, partnerName}: IPartner) => ({id, partnerName }))
+      data: response.sort((a,b) => b.id - a.id).map(({partnerid, partnerName}: IPartner) => ({partnerid, partnerName }))
     }
   }
 
-  findOne(id: string): Promise<Partner> {
+  findOne(partnerid: string): Promise<Partner> {
     return this.partnerModel.findOne({
       where: {
-        id,
+        partnerid,
       },
     });
   }

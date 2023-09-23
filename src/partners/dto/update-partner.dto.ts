@@ -6,5 +6,5 @@ import {CreatePartnerDto, ICreatePartner} from './create-partner.dto';
 export class UpdatePartnerDto extends CreatePartnerDto implements ICreatePartner {
   @ApiProperty({example: 1})
   @IsNumber()
-  readonly id: number;
+  readonly partnerid: number;
 }

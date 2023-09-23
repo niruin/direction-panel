@@ -1,14 +1,20 @@
-import { Column, Model, Table, HasMany } from 'sequelize-typescript';
+import {Column, Model, Table, HasMany, DataType} from 'sequelize-typescript';
 import {DataTypes} from 'sequelize';
 import {Bot} from '../../bots/models/bot.model';
-import {Withdraws} from '../../withdraws/models/withdraws.model';
+import {Withdraw} from '../../withdraws/models/withdraws.model';
+
+export enum EnumCurrency {
+  RUB='RUB',
+  UAH='UAH',
+  KZT='KZT',
+}
 
 export interface IPartner {
-  id: number;
+  partnerid: number;
   fiatBalance: number;
   urlPanel: string;
   partnerName: string;
-  currency: string;
+  currency: EnumCurrency;
   freeRate: number;
   payWindow: number;
   rateBTCID: number;
@@ -17,33 +23,37 @@ export interface IPartner {
   botLimit: number;
 }
 
-@Table
+@Table({
+  tableName: 'zs_partners'
+})
 export class Partner extends Model implements IPartner {
   @Column({ type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true})
-  id: number;
-  @Column
+  partnerid: number;
+  @Column({ type: DataTypes.DECIMAL(20, 10)})
   fiatBalance: number;
-  @Column
+  @Column({ type: DataTypes.STRING})
   urlPanel: string;
-  @Column
+  @Column({ type: DataTypes.STRING})
   partnerName: string;
-  @Column
-  currency: string;
-  @Column
+  @Column({
+    type: DataType.ENUM(...Object.values(EnumCurrency)),
+  })
+  currency: EnumCurrency;
+  @Column({ type: DataTypes.INTEGER})
   freeRate: number;
-  @Column
+  @Column({ type: DataTypes.INTEGER})
   payWindow: number;
-  @Column
+  @Column({ type: DataTypes.INTEGER})
   rateBTCID: number;
-  @Column
+  @Column({ type: DataTypes.INTEGER})
   rateUSDTID: number;
-  @Column
+  @Column({ type: DataTypes.INTEGER})
   countBotLimit: number;
-  @Column
+  @Column({ type: DataTypes.INTEGER})
   botLimit: number;
 
   @HasMany(() => Bot)
   bot: Bot[];
-  @HasMany(() => Withdraws)
-  withdraw: Withdraws[];
+  @HasMany(() => Withdraw)
+  withdraw: Withdraw[];
 }

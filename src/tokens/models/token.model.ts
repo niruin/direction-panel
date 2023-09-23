@@ -3,16 +3,18 @@ import {DataTypes} from 'sequelize';
 
 export interface IToken {
   id: number;
-  partnerId: number;
+  partnerid: number;
   token: string;
 }
 
-@Table
+@Table({
+  tableName: 'zs_tokens'
+})
 export class Token extends Model implements IToken {
   @Column({ type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true})
   id: number;
-  @Column
-  partnerId: number;
-  @Column
+  @Column({ type: DataTypes.INTEGER})
+  partnerid: number;
+  @Column({ type: DataTypes.STRING})
   token: string;
 }

@@ -2,7 +2,7 @@ import {BadRequestException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/sequelize';
 
 import {Response} from '../interfaces/interface'
-import {Bot} from './models/bot.model';
+import {Bot, IBot} from './models/bot.model';
 import {BotsAllResponse} from './interfaces/bots.interface';
 import {UpdateBotDto} from './dto/update-bot.dto';
 import {CreateBotDto} from './dto/create-bot.dto';
@@ -102,7 +102,6 @@ export class BotsService {
   }
 
   async create(createBotDto: CreateBotDto, username: string): Promise<Response> {
-    console.log(username);
     const response = await this.botsModel.create({...createBotDto, employee: username});
 
     const logData: CreateBotLogDto = {
@@ -136,7 +135,7 @@ export class BotsService {
     const logData: CreateBotLogDto = {
       botName: bot.botName,
       event: 'Удален',
-      partnerId: bot.partnerId,
+      partnerId: bot.partnerID,
     }
 
     await this.botLog.create(logData)
@@ -152,7 +151,7 @@ export class BotsService {
     const {id, ...restData} = issueBotDto;
     const data = {
       ...restData,
-      partnerId: issueBotDto.partnerId
+      partnerID: issueBotDto.partnerId
     };
 
     const response = await this.botsModel.update({...data},

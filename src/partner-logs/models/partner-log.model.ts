@@ -12,7 +12,9 @@ export interface IPartnerLog {
   date: Date;
 }
 
-@Table
+@Table({
+  tableName: 'zs_partners_logs'
+})
 export class PartnerLog extends Model implements IPartnerLog {
   @Column({ type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true})
   id: number;

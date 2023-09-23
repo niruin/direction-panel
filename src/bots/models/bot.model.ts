@@ -4,28 +4,32 @@ import {Partner} from '../../partners/models/partner.model';
 
 export interface IBot {
   id: number;
-  partnerId: number;
+  partnerID: number;
   token: string;
   botName: string
   employee: string;
 }
 
-@Table({timestamps: true, createdAt: true})
+@Table({
+  tableName: 'zs_partners_bots',
+  timestamps: true,
+  createdAt: true
+})
 export class Bot extends Model implements IBot {
-  @Column({ type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true})
+  @Column({type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true})
   id: number;
-  @Column
+  @Column({ type: DataTypes.STRING})
   token: string;
 
-  @Column
+  @Column({ type: DataTypes.STRING})
   botName: string;
 
-  @Column
+  @Column({ type: DataTypes.STRING})
   employee: string;
 
   @ForeignKey(() => Partner)
-  @Column
-  partnerId: number;
+  @Column({ type: DataTypes.INTEGER})
+  partnerID: number;
 
   @BelongsTo(() => Partner)
   partner: Partner;
