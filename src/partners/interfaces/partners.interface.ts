@@ -45,7 +45,7 @@ export class PartnerResponseData implements IPartner {
   @ApiProperty({example: EnumCurrency.RUB})
   currency: EnumCurrency;
   @ApiProperty({example: 1.5})
-  freeRate: number;
+  feeRate: number;
   @ApiProperty({example: 20})
   payWindow: number;
   @ApiProperty({example: 2})

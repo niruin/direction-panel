@@ -15,7 +15,7 @@ export interface IPartner {
   urlPanel: string;
   partnerName: string;
   currency: EnumCurrency;
-  freeRate: number;
+  feeRate: number;
   payWindow: number;
   rateBTCID: number;
   rateUSDTID: number;
@@ -40,7 +40,7 @@ export class Partner extends Model implements IPartner {
   })
   currency: EnumCurrency;
   @Column({ type: DataTypes.INTEGER})
-  freeRate: number;
+  feeRate: number;
   @Column({ type: DataTypes.INTEGER})
   payWindow: number;
   @Column({ type: DataTypes.INTEGER})

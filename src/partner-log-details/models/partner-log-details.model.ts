@@ -8,7 +8,7 @@ export interface IPartnerLogDetails extends ICreatePartner {
   prevPartnerName: string;
   prevUrlPanel: string;
   prevCurrency: string;
-  prevFreeRate: number;
+  prevFeeRate: number;
   prevRateBTCID: number;
   prevRateUSDTID: number;
   prevBotLimit: number;
@@ -29,7 +29,7 @@ export class PartnerLogDetails extends Model implements IPartnerLogDetails {
   @Column
   prevCurrency: string;
   @Column
-  prevFreeRate: number;
+  prevFeeRate: number;
   @Column
   prevRateBTCID: number;
   @Column
@@ -46,7 +46,7 @@ export class PartnerLogDetails extends Model implements IPartnerLogDetails {
   @Column
   currency: string;
   @Column
-  freeRate: number;
+  feeRate: number;
   @Column
   rateBTCID: number;
   @Column

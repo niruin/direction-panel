@@ -18,7 +18,7 @@ export class PartnerLogDetailsResponseData implements IPartnerLogDetails {
 
   @ApiProperty({example: 1.5})
   @IsNumber()
-  prevFreeRate: number;
+  prevFeeRate: number;
 
   @ApiProperty({example: 2})
   @IsNumber()
@@ -49,7 +49,7 @@ export class PartnerLogDetailsResponseData implements IPartnerLogDetails {
 
   @ApiProperty({example: 1.5})
   @IsNumber()
-  readonly freeRate: number;
+  readonly feeRate: number;
 
   @ApiProperty({example: 2})
   @IsNumber()

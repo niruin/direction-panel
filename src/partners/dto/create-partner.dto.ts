@@ -5,7 +5,7 @@ export interface ICreatePartner {
   partnerName: string;
   urlPanel: string;
   currency: string;
-  freeRate: number;
+  feeRate: number;
   rateBTCID: number;
   rateUSDTID: number;
   botLimit: number;
@@ -27,7 +27,7 @@ export class CreatePartnerDto implements ICreatePartner {
 
   @ApiProperty({example: 1.5})
   @IsNumber()
-  readonly freeRate: number;
+  readonly feeRate: number;
 
   @ApiProperty({example: 2})
   @IsNumber()
