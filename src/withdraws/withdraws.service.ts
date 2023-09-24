@@ -41,7 +41,7 @@ export class WithdrawsService {
       status: 'success',
       message: ['Данные получены'],
       statusCode: HttpStatus.OK,
-      data: response.sort((a, b) => b.id - a.id).map((item) => (
+      data: response.sort((a, b) => b.withdrawid - a.withdrawid).map((item) => (
         {
           ...item,
           partnerName: item['partner.partnerName']
