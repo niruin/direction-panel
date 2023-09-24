@@ -9,10 +9,10 @@ async function bootstrap() {
   app.enableCors({
     credentials: true,
     // origin: 'http://localhost:3000',
-    // origin: 'http://128.72.71.122:3000',
     origin: true,
   });
   app.useGlobalPipes(new ValidationPipe());
+  app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
     .setTitle('Direction Panel Documentation')
