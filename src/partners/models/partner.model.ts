@@ -2,6 +2,7 @@ import {Column, Model, Table, HasMany, DataType} from 'sequelize-typescript';
 import {DataTypes} from 'sequelize';
 import {Bot} from '../../bots/models/bot.model';
 import {Withdraw} from '../../withdraws/models/withdraws.model';
+import {Token} from '../../tokens/models/token.model';
 
 export enum EnumCurrency {
   RUB='RUB',
@@ -56,4 +57,6 @@ export class Partner extends Model implements IPartner {
   bot: Bot[];
   @HasMany(() => Withdraw)
   withdraw: Withdraw[];
+  @HasMany(() => Token)
+  token: Token[];
 }

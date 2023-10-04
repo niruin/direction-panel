@@ -10,6 +10,8 @@ export class TokenResponseData implements IToken {
   partnerid: number;
   @ApiProperty({example: 'token'})
   token: string;
+  @ApiProperty({example: 'partnerName'})
+  partnerName: string;
 }
 
 export class TokensAllResponse extends Response {

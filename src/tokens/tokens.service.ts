@@ -27,7 +27,15 @@ export class TokensService {
   }
 
   async findAll(): Promise<TokensAllResponse> {
-    const response = await this.tokensModel.findAll({raw: true}).catch((error) => {
+    const response = await this.tokensModel.findAll({
+      include: [
+        {
+          model: Partner,
+          attributes: ['partnerName'],
+        }
+      ],
+      raw: true
+    }).catch((error) => {
       throw new BadRequestException({
         status: 'error',
         message: ['Не удалось загрузить данные'],
@@ -40,7 +48,12 @@ export class TokensService {
       status: 'success',
       message: ['Данные получены'],
       statusCode: HttpStatus.OK,
-      data: response.sort((a,b) => b.id - a.id)
+      data: response.sort((a, b) => b.id - a.id).map(item => (
+        {
+          ...item,
+          partnerName: item['partner.partnerName']
+        }
+      ))
     }
   }
 
