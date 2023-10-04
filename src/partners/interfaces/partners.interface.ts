@@ -2,7 +2,6 @@ import {ApiProperty} from '@nestjs/swagger';
 
 import {Response} from '../../interfaces/interface';
 import {EnumCurrency, EnumTariffPlan, IPartner} from '../models/partner.model';
-import {DataType} from 'sequelize-typescript';
 
 class PartnersCreateResponseData {
   @ApiProperty({example: 'success'})

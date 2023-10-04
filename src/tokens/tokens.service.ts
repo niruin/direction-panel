@@ -6,8 +6,6 @@ import {Token} from './models/token.model';
 import {TokensAllResponse} from './interfaces/tokens.interface';
 import {UpdateTokenDto} from './dto/update-token.dto';
 import {CreateTokenDto} from './dto/create-token.dto';
-import {PartnersRemoveResponse} from '../partners/interfaces/partners.interface';
-import {CreatePartnerLogDto} from '../partner-logs/dto/create-partner-log.dto';
 import {Partner} from '../partners/models/partner.model';
 
 @Injectable()

@@ -1,4 +1,3 @@
-import {EnumCancelReason, EnumStatus, EnumTypeWithdraw, IWithdraw} from '../../withdraws/models/withdraws.model';
 import {ApiProperty} from '@nestjs/swagger';
 import {Response} from '../../interfaces/interface';
 import {IToken} from '../models/token.model';
