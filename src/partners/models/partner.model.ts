@@ -10,6 +10,13 @@ export enum EnumCurrency {
   KZT='KZT',
 }
 
+export enum EnumTariffPlan {
+  simple='simple',
+  advanced='advanced',
+  pro='pro',
+  expert='expert',
+}
+
 export interface IPartner {
   partnerid: number;
   fiatBalance: number;
@@ -22,6 +29,7 @@ export interface IPartner {
   rateUSDTID: number;
   countBotLimit: number;
   botLimit: number;
+  tariffPlan: EnumTariffPlan;
 }
 
 @Table({
@@ -52,6 +60,10 @@ export class Partner extends Model implements IPartner {
   countBotLimit: number;
   @Column({ type: DataTypes.INTEGER})
   botLimit: number;
+  @Column({
+    type: DataType.ENUM(...Object.values(EnumTariffPlan)),
+  })
+  tariffPlan: EnumTariffPlan;
 
   @HasMany(() => Bot)
   bot: Bot[];

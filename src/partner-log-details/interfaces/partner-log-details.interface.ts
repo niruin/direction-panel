@@ -2,6 +2,7 @@ import {IPartnerLogDetails} from '../models/partner-log-details.model';
 import {ApiProperty} from '@nestjs/swagger';
 import {IsNumber, IsString} from 'class-validator';
 import {Response} from '../../interfaces/interface';
+import {EnumCurrency, EnumTariffPlan} from '../../partners/models/partner.model';
 
 export class PartnerLogDetailsResponseData implements IPartnerLogDetails {
   @ApiProperty({example: 'partner name example'})
@@ -12,9 +13,9 @@ export class PartnerLogDetailsResponseData implements IPartnerLogDetails {
   @IsString()
   prevUrlPanel: string;
 
-  @ApiProperty({example: 'RUB'})
+  @ApiProperty({example: EnumCurrency.RUB})
   @IsString()
-  prevCurrency: string;
+  prevCurrency: EnumCurrency;
 
   @ApiProperty({example: 1.5})
   @IsNumber()
@@ -35,6 +36,11 @@ export class PartnerLogDetailsResponseData implements IPartnerLogDetails {
   @ApiProperty({example: 5})
   @IsNumber()
   prevCountBotLimit: number;
+
+  @ApiProperty({example: EnumTariffPlan.simple})
+  @IsString()
+  prevTariffPlan: EnumTariffPlan;
+
   @ApiProperty({example: 'partner name example'})
   @IsString()
   readonly partnerName: string;
@@ -43,9 +49,9 @@ export class PartnerLogDetailsResponseData implements IPartnerLogDetails {
   @IsString()
   readonly urlPanel: string;
 
-  @ApiProperty({example: 'RUB'})
+  @ApiProperty({example: EnumCurrency.RUB})
   @IsString()
-  readonly currency: string;
+  readonly currency: EnumCurrency;
 
   @ApiProperty({example: 1.5})
   @IsNumber()
@@ -66,6 +72,10 @@ export class PartnerLogDetailsResponseData implements IPartnerLogDetails {
   @ApiProperty({example: 5})
   @IsNumber()
   readonly countBotLimit: number;
+
+  @ApiProperty({example: EnumTariffPlan.simple})
+  @IsString()
+  tariffPlan: EnumTariffPlan;
 
   @ApiProperty({example: 1})
   @IsNumber()

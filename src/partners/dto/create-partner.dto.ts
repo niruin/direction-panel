@@ -1,15 +1,17 @@
 import {ApiProperty} from '@nestjs/swagger';
 import {IsNumber, IsString} from 'class-validator';
+import {EnumCurrency, EnumTariffPlan} from '../models/partner.model';
 
 export interface ICreatePartner {
   partnerName: string;
   urlPanel: string;
-  currency: string;
+  currency: EnumCurrency;
   feeRate: number;
   rateBTCID: number;
   rateUSDTID: number;
   botLimit: number;
   countBotLimit: number;
+  tariffPlan: EnumTariffPlan;
 }
 
 export class CreatePartnerDto implements ICreatePartner {
@@ -21,9 +23,9 @@ export class CreatePartnerDto implements ICreatePartner {
   @IsString()
   readonly urlPanel: string;
 
-  @ApiProperty({example: 'RUB'})
+  @ApiProperty({example: EnumCurrency.RUB})
   @IsString()
-  readonly currency: string;
+  readonly currency: EnumCurrency;
 
   @ApiProperty({example: 1.5})
   @IsNumber()
@@ -44,4 +46,8 @@ export class CreatePartnerDto implements ICreatePartner {
   @ApiProperty({example: 5})
   @IsNumber()
   readonly countBotLimit: number;
+
+  @ApiProperty({example: EnumTariffPlan.simple})
+  @IsString()
+  readonly tariffPlan: EnumTariffPlan;
 }

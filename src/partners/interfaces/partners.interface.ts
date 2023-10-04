@@ -1,7 +1,8 @@
 import {ApiProperty} from '@nestjs/swagger';
 
 import {Response} from '../../interfaces/interface';
-import {EnumCurrency, IPartner} from '../models/partner.model';
+import {EnumCurrency, EnumTariffPlan, IPartner} from '../models/partner.model';
+import {DataType} from 'sequelize-typescript';
 
 class PartnersCreateResponseData {
   @ApiProperty({example: 'success'})
@@ -56,6 +57,8 @@ export class PartnerResponseData implements IPartner {
   countBotLimit: number;
   @ApiProperty({example: 5})
   botLimit: number;
+  @ApiProperty({example: EnumTariffPlan.simple,})
+  tariffPlan: EnumTariffPlan;
 }
 
 export class PartnersAllResponse extends Response {

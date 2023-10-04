@@ -37,6 +37,7 @@ export class PartnerLogDetailsService {
       prevRateUSDTID: beforeUpdateUser.rateUSDTID,
       prevBotLimit: beforeUpdateUser.botLimit,
       prevCountBotLimit: beforeUpdateUser.countBotLimit,
+      prevTariffPlan: beforeUpdateUser.countBotLimit,
       partnerName: afterUpdateUser.partnerName,
       urlPanel: afterUpdateUser.urlPanel,
       currency: afterUpdateUser.currency,
@@ -45,6 +46,7 @@ export class PartnerLogDetailsService {
       rateUSDTID: afterUpdateUser.rateUSDTID,
       botLimit: afterUpdateUser.botLimit,
       countBotLimit: afterUpdateUser.countBotLimit,
+      tariffPlan: afterUpdateUser.tariffPlan,
       partnerLogId: idLog,
     }
     this.partnerLogDetailsModel.create({...data});
