@@ -5,6 +5,8 @@ import {DataTypes} from 'sequelize';
 export interface IUser {
   id: number;
   username: string;
+  password: string;
+  twoFactorSecret: string;
   role: EnumUserRole;
 }
 
@@ -14,10 +16,12 @@ export interface IUser {
 export class User extends Model implements IUser {
   @Column({ type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true})
   id: number;
-  @Column
+  @Column({ type: DataTypes.STRING})
   username: string;
-  @Column
+  @Column({ type: DataTypes.STRING})
   password: string;
+  @Column({ type: DataTypes.STRING})
+  twoFactorSecret: string;
   @Column({type: DataType.ENUM(...Object.values(EnumUserRole))})
   role: EnumUserRole;
 }

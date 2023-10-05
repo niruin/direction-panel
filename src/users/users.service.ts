@@ -63,6 +63,28 @@ export class UsersService {
     return this.findOne(username);
   }
 
+  async set2FAKey(userId: number, key: string) {
+    await this.userModel.update({twoFactorSecret: key},
+      {
+        where: {
+          id: userId,
+        },
+      }).catch((error) => {
+      throw new BadRequestException({
+        status: 'error',
+        message: ['Данные не сохранены'],
+        statusCode: HttpStatus.BAD_REQUEST,
+        error: error.message,
+      })
+    });
+
+    return {
+      status: 'success',
+      statusCode: HttpStatus.OK,
+      message: ['Запись обновлена']
+    }
+  }
+
   async update(updateUserData: IUpdateUserData, userId: number): Promise<Response> {
     let data = {}
     if(updateUserData.password) {
