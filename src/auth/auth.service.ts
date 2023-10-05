@@ -25,14 +25,38 @@ export class AuthService {
   ) {
   }
 
-  async signIn(username: string, pass: string): Promise<SignInResponseType> {
+  async signIn(username: string, pass: string, token?: string): Promise<SignInResponseType> {
     const user = await this.usersService.findByUsername(username);
 
     if (user?.password !== pass) {
       throw new UnauthorizedException();
     }
 
-    const {id, username: nickname, role} = user;
+    const {id, username: nickname, role, twoFactorSecret} = user;
+
+    if(twoFactorSecret) {
+      if(!token) {
+        return {
+          accessToken: '2fa'
+        }
+      }
+
+      const verified = speakeasy.totp.verify({
+        secret: twoFactorSecret,
+        encoding: 'base32',
+        token: token
+      })
+
+      if(!verified) {
+        throw new BadRequestException({
+          status: 'error',
+          message: ['Не верный однаразовый пароль'],
+          statusCode: HttpStatus.BAD_REQUEST,
+          error: 'Не верный однаразовый пароль',
+        })
+      }
+    }
+
     const payload = {id, username: nickname, role};
     const accessToken = await this.jwtService.signAsync(payload);
 
@@ -62,10 +86,8 @@ export class AuthService {
       })
     }
 
-    // const secret = speakeasy.generateSecret({name: 'PartnerPanel'});
-
     const secret = speakeasy.generateSecret({
-      name: 'somename1'
+      name: 'PartnerPanel'
     })
 
     const generateQR = async (otpAuthUrl:string) => {
@@ -90,15 +112,12 @@ export class AuthService {
   }
 
   async activationTwoFactorAuth(userId: string, key: string, userToken: string): Promise<Response> {
-    console.log(key);
-    console.log(userToken);
     const verified = speakeasy.totp.verify({
       secret: key,
       encoding: 'base32',
       token: userToken
     })
 
-    console.log(verified);
     if(!verified) {
       throw new BadRequestException({
         status: 'error',

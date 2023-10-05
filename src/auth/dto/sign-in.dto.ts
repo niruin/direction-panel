@@ -6,4 +6,7 @@ export class SignInDto {
 
   @ApiProperty({ example: '654321' })
   readonly password: string;
+
+  @ApiProperty({ example: '123456' })
+  readonly token: string;
 }

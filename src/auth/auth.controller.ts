@@ -19,8 +19,8 @@ export class AuthController {
   @ApiOkResponse({type: SignInResponse})
   @Post('authorization')
   signIn(@Body() signInDto: SignInDto): Promise<SignInResponseType> {
-    const { username, password } = signInDto;
-    return this.authService.signIn(username, password);
+    const { username, password, token } = signInDto;
+    return this.authService.signIn(username, password, token);
   }
 
   @Get('profile')
