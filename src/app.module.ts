@@ -16,6 +16,7 @@ import {TokensModule} from './tokens/tokens.module';
 import {BotsModule} from './bots/bots.module';
 import {BotLogsModule} from './bot-logs/bot-logs.module';
 import * as process from 'process';
+import {ProxyModule} from './proxy/proxy.module';
 
 @Module({
   imports: [
@@ -44,7 +45,8 @@ import * as process from 'process';
     AuthModule,
     TokensModule,
     BotsModule,
-    BotLogsModule
+    BotLogsModule,
+    ProxyModule,
   ],
   providers: [
     {
