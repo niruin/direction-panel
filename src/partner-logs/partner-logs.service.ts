@@ -63,7 +63,7 @@ export class PartnerLogsService {
         },
       }
     }
-    console.log('page', page);
+
     const response = await this.partnerLogModel.findAndCountAll(
       {
         ...options,

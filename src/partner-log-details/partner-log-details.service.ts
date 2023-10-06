@@ -27,7 +27,7 @@ export class PartnerLogDetailsService {
     }
   }
 
-  create(beforeUpdateUser, afterUpdateUser, idLog: number) {
+  async create(beforeUpdateUser, afterUpdateUser, idLog: number) {
     const data: IPartnerLogDetails = {
       prevPartnerName: beforeUpdateUser.partnerName,
       prevUrlPanel: beforeUpdateUser.urlPanel,
@@ -37,7 +37,7 @@ export class PartnerLogDetailsService {
       prevRateUSDTID: beforeUpdateUser.rateUSDTID,
       prevBotLimit: beforeUpdateUser.botLimit,
       prevCountBotLimit: beforeUpdateUser.countBotLimit,
-      prevTariffPlan: beforeUpdateUser.countBotLimit,
+      prevTariffPlan: beforeUpdateUser.prevTariffPlan,
       partnerName: afterUpdateUser.partnerName,
       urlPanel: afterUpdateUser.urlPanel,
       currency: afterUpdateUser.currency,
