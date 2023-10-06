@@ -19,7 +19,8 @@ export class PartnersService {
     @InjectModel(Partner)
     private readonly partnerModel: typeof Partner,
     private readonly partnerLogsService: PartnerLogsService,
-  ) {}
+  ) {
+  }
 
   async create(createPartnerDto: CreatePartnerDto, username: string): Promise<PartnersCreateResponse> {
     const response = await this.partnerModel.create({...createPartnerDto});
@@ -78,8 +79,16 @@ export class PartnersService {
     }
   }
 
-  async findAll(pageNumber?: string): Promise<PartnersAllResponse> {
-    const response = await this.partnerModel.findAll({raw: true}).catch((error) => {
+  async findAll(page: number, size: number): Promise<PartnersAllResponse> {
+    const response = await this.partnerModel.findAndCountAll(
+      {
+        offset: (page - 1) * size,
+        limit: size,
+        order: [
+          ['partnerid', 'DESC'],
+        ],
+        raw: true
+      }).catch((error) => {
       throw new BadRequestException({
         status: 'error',
         message: ['Не удалось загрузить данные'],
@@ -92,7 +101,8 @@ export class PartnersService {
       status: 'success',
       message: ['Данные получены'],
       statusCode: HttpStatus.OK,
-      data: response.sort((a,b) => b.id - a.id)
+      data: response.rows,
+      totalPages: response.count
     }
   }
 
@@ -110,7 +120,7 @@ export class PartnersService {
       status: 'success',
       message: ['Данные получены'],
       statusCode: HttpStatus.OK,
-      data: response.sort((a,b) => b.id - a.id).map(({partnerid, partnerName}: IPartner) => ({partnerid, partnerName }))
+      data: response.sort((a, b) => b.id - a.id).map(({partnerid, partnerName}: IPartner) => ({partnerid, partnerName}))
     }
   }
 

@@ -63,6 +63,8 @@ export class PartnerResponseData implements IPartner {
 export class PartnersAllResponse extends Response {
   @ApiProperty({type: [PartnerResponseData]})
   data: PartnerResponseData[];
+  @ApiProperty({example: 42})
+  totalPages: number;
 }
 
 export class PartnerDictionaryResponseData implements Pick<IPartner, 'partnerid' | 'partnerName'> {

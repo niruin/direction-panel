@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Get, Param, Post, Put, Request} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Post, Put, Query, Request} from '@nestjs/common';
 import {ApiOkResponse, ApiTags} from '@nestjs/swagger';
 
 import {CreatePartnerDto} from './dto/create-partner.dto';
@@ -30,9 +30,10 @@ export class PartnersController {
   }
 
   @ApiOkResponse({type: PartnersAllResponse})
-  @Get('/all')
-  findAll(): Promise<PartnersAllResponse> {
-    return this.partnersService.findAll();
+  @Get('/list')
+  findAll(@Query() query): Promise<PartnersAllResponse> {
+    const {page, size} = query;
+    return this.partnersService.findAll(Number(page), Number(size));
   }
 
   @ApiOkResponse({type: PartnersAllResponse})
