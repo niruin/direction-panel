@@ -21,4 +21,6 @@ export class BotResponseData implements IBot {
 export class BotsAllResponse extends Response {
   @ApiProperty({type: [BotResponseData]})
   data: BotResponseData[];
+  @ApiProperty({example: 42})
+  totalPages: number;
 }

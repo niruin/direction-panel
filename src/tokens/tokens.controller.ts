@@ -1,5 +1,5 @@
 import {ApiOkResponse, ApiTags} from '@nestjs/swagger';
-import {Body, Controller, Delete, Get, Param, Post, Put, Request} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Post, Put, Query, Request} from '@nestjs/common';
 
 import {Response} from '../interfaces/interface';
 import {TokensService} from './tokens.service';
@@ -16,8 +16,9 @@ export class TokensController {
 
   @ApiOkResponse({type: TokensAllResponse})
   @Get('/list')
-  findAll(): Promise<TokensAllResponse> {
-    return this.tokensService.findAll();
+  findAll(@Query() query): Promise<TokensAllResponse> {
+    const { page = 1, size = 10 } = query;
+    return this.tokensService.findAll(Number(page), Number(size));
   }
 
   @Post('/add')

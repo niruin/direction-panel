@@ -24,4 +24,6 @@ export class PartnerLogsResponseData implements IPartnerLog {
 export class PartnerLogsAllResponse extends Response {
   @ApiProperty({type: [PartnerLogsResponseData]})
   data: PartnerLogsResponseData[];
+  @ApiProperty({example: 42})
+  totalPages: number;
 }

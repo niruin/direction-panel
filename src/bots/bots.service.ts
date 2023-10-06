@@ -30,14 +30,19 @@ export class BotsService {
     });
   }
 
-  async findAll(status: 'active' | 'issued'): Promise<BotsAllResponse> {
+  async findAll(status: 'active' | 'issued', page: number, size: number): Promise<BotsAllResponse> {
     const options = status === 'issued' ? {where: {partnerId: {[Op.ne]: null}}} : {
       where: {
         partnerId: null
       },
     }
-    const response = await this.botsModel.findAll({
+    const response = await this.botsModel.findAndCountAll({
       ...options,
+      offset: (page - 1) * size,
+      limit: size,
+      order: [
+        ['id', 'DESC'],
+      ],
       raw: true,
       include: [
         {
@@ -58,10 +63,11 @@ export class BotsService {
       status: 'success',
       message: ['Данные получены'],
       statusCode: HttpStatus.OK,
-      data: response.sort((a, b) => b.id - a.id).map(item => ({
+      data: response.rows.map(item => ({
         ...item,
         partnerName: item.partner?.partnerName,
-      }))
+      })),
+      totalPages: response.count
     }
   }
 

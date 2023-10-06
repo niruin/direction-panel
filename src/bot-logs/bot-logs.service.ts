@@ -24,8 +24,16 @@ export class BotLogsService {
     }
   }
 
-  async findAll(): Promise<BotLogsAllResponse> {
-    const response = await this.botLogModel.findAll({ raw: true}).catch((error) => {
+  async findAll(page: number, size: number): Promise<BotLogsAllResponse> {
+    const response = await this.botLogModel.findAndCountAll(
+      {
+        offset: (page - 1) * size,
+        limit: size,
+        order: [
+          ['id', 'DESC'],
+        ],
+        raw: true
+      }).catch((error) => {
       throw new BadRequestException({
         status: 'error',
         message: ['Не удалось загрузить данные'],
@@ -38,7 +46,8 @@ export class BotLogsService {
       status: 'success',
       message: ['Данные получены'],
       statusCode: HttpStatus.OK,
-      data: response.sort((a,b) => b.id - a.id)
+      data: response.rows,
+      totalPages: response.count,
     }
   }
 }

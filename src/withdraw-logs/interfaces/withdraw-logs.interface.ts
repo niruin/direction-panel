@@ -1,8 +1,8 @@
-import {IPartnerLog} from '../../partner-logs/models/partner-log.model';
 import {ApiProperty} from '@nestjs/swagger';
-import {LogEvent} from '../../partner-logs/dto/create-partner-log.dto';
 import {IWithdrawLog} from '../models/withdraw-log.model';
 import {EnumStatus} from '../../withdraws/models/withdraws.model';
+import {Response} from '../../interfaces/interface';
+import {TokenResponseData} from '../../tokens/interfaces/tokens.interface';
 
 export class WithdrawLogsResponseData implements IWithdrawLog {
   @ApiProperty({example: 1})
@@ -17,4 +17,11 @@ export class WithdrawLogsResponseData implements IWithdrawLog {
   other: string;
   @ApiProperty({example: 1})
   withdrawId: number;
+}
+
+export class WithdrawLogsResponse extends Response {
+  @ApiProperty({type: [WithdrawLogsResponseData]})
+  data: WithdrawLogsResponseData[];
+  @ApiProperty({example: 42})
+  totalPages: number;
 }

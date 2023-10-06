@@ -38,4 +38,6 @@ export class WithdrawsAllResponseData implements IWithdraw {
 export class WithdrawsAllResponse extends Response {
   @ApiProperty({type: [WithdrawsAllResponseData]})
   data: WithdrawsAllResponseData[];
+  @ApiProperty({example: 42})
+  totalPages: number;
 }

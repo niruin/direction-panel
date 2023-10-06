@@ -18,17 +18,21 @@ export class WithdrawsService {
   ) {
   }
 
-  async findAll(): Promise<WithdrawsAllResponse> {
-    const options = {
+  async findAll(page: number, size: number): Promise<WithdrawsAllResponse> {
+    const response = await this.withdrawsModel.findAndCountAll({
       include: [
         {
           model: Partner,
           attributes: ['partnerName'],
         }
       ],
+      offset: (page - 1) * size,
+      limit: size,
+      order: [
+        ['withdrawid', 'DESC'],
+      ],
       raw: true,
-    }
-    const response = await this.withdrawsModel.findAll(options).catch((error) => {
+    }).catch((error) => {
       throw new BadRequestException({
         status: 'error',
         message: ['Не удалось загрузить данные'],
@@ -41,12 +45,13 @@ export class WithdrawsService {
       status: 'success',
       message: ['Данные получены'],
       statusCode: HttpStatus.OK,
-      data: response.sort((a, b) => b.withdrawid - a.withdrawid).map((item) => (
+      data: response.rows.map((item) => (
         {
           ...item,
           partnerName: item['partner.partnerName']
         }
-      ))
+      )),
+      totalPages: response.count
     }
   }
 

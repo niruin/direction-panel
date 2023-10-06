@@ -12,7 +12,8 @@ export class BotLogsController {
 
   @ApiOkResponse({type: BotLogsAllResponse})
   @Get('/list')
-  findAll(): Promise<BotLogsAllResponse> {
-    return this.botLogService.findAll();
+  findAll(@Query() query): Promise<BotLogsAllResponse> {
+    const { page = 1, size = 10 } = query
+    return this.botLogService.findAll(Number(page), Number(size));
   }
 }

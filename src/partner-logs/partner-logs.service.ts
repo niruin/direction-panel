@@ -4,7 +4,7 @@ import {InjectModel} from '@nestjs/sequelize';
 import {PartnerLogsAllResponse} from './interfaces/partner-logs.interface';
 import {IPartnerLog, PartnerLog} from './models/partner-log.model';
 import {PartnersCreateResponse} from '../partners/interfaces/partners.interface';
-import { LogEvent} from './dto/create-partner-log.dto';
+import {LogEvent} from './dto/create-partner-log.dto';
 import {PartnerLogDetailsService} from '../partner-log-details/partner-log-details.service';
 import {ICreatePartner} from '../partners/dto/create-partner.dto';
 import {IPartner} from '../partners/models/partner.model';
@@ -54,15 +54,26 @@ export class PartnerLogsService {
     }
   }
 
-  async findAll(partnerId?: string): Promise<PartnerLogsAllResponse> {
+  async findAll(page: number, size: number, partnerId?: string,): Promise<PartnerLogsAllResponse> {
     let options = {};
-    console.log('****',partnerId);
-    if(partnerId) {
-      options = {...options,  where: {
+    if (partnerId) {
+      options = {
+        ...options, where: {
           partnerId: Number(partnerId),
-        },}
+        },
+      }
     }
-    const response = await this.partnerLogModel.findAll({...options, raw: true}).catch((error) => {
+    console.log('page', page);
+    const response = await this.partnerLogModel.findAndCountAll(
+      {
+        ...options,
+        offset: (page - 1) * size,
+        limit: size,
+        order: [
+          ['id', 'DESC'],
+        ],
+        raw: true
+      }).catch((error) => {
       throw new BadRequestException({
         status: 'error',
         message: ['Не удалось загрузить данные'],
@@ -75,7 +86,8 @@ export class PartnerLogsService {
       status: 'success',
       message: ['Данные получены'],
       statusCode: HttpStatus.OK,
-      data: response.sort((a,b) => b.id - a.id)
+      data: response.rows,
+      totalPages: response.count
     }
   }
 }

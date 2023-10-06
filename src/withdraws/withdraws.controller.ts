@@ -1,5 +1,5 @@
 import {ApiOkResponse, ApiTags} from '@nestjs/swagger';
-import {Body, Controller, Get, Put, Request} from '@nestjs/common';
+import {Body, Controller, Get, Put, Query, Request} from '@nestjs/common';
 
 import {WithdrawsService} from './withdraws.service';
 import {WithdrawsAllResponse} from './interfaces/withdraws.interface';
@@ -13,9 +13,10 @@ export class WithdrawsController {
   }
 
   @ApiOkResponse({type: WithdrawsAllResponse})
-  @Get('/all')
-  findAll(): Promise<WithdrawsAllResponse> {
-    return  this.withdrawsService.findAll();
+  @Get('/list')
+  findAll(@Query() query): Promise<WithdrawsAllResponse> {
+    const { page = 1, size = 10} = query;
+    return  this.withdrawsService.findAll(Number(page), Number(size));
   }
 
   @ApiOkResponse({type: Response})

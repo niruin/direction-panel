@@ -18,7 +18,8 @@ export class BotsController {
   @Get('/list')
   findAll(@Query() query): Promise<BotsAllResponse> {
     const status: 'active' | 'issued' = query.status;
-    return this.botsService.findAll(status);
+    const {page = 1, size = 10} = query;
+    return this.botsService.findAll(status, Number(page), Number(size));
   }
 
   @Post('/add')
