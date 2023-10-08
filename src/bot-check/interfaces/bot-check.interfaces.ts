@@ -12,6 +12,8 @@ export class BotCheckGroups implements IBotCheckGroup {
   tokens: string;
   @ApiProperty({example: 1})
   userId: number;
+  @ApiProperty({example: 'something description'})
+  description: string;
 }
 
 export class BotCheckGroupsAllResponse extends Response {

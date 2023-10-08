@@ -11,6 +11,7 @@ export interface IBotCheckGroup {
   tokens: string;
   status: EnumBotCheckGroupStatus;
   userId: number;
+  description: string;
 }
 
 @Table({
@@ -19,10 +20,12 @@ export interface IBotCheckGroup {
 export class BotCheckGroup extends Model implements IBotCheckGroup {
   @Column({ type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true})
   id: number;
-  @Column({type: DataTypes.STRING})
+  @Column({type: DataTypes.TEXT})
   tokens: string;
   @Column({ type: DataType.ENUM(...Object.values(EnumBotCheckGroupStatus))})
   status: EnumBotCheckGroupStatus;
   @Column({type: DataTypes.INTEGER})
   userId: number;
+  @Column({type: DataTypes.STRING})
+  description: string;
 }

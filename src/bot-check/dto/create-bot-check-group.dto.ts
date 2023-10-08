@@ -8,4 +8,6 @@ export class CreateBotCheckGroupDto implements Omit<IBotCheckGroup, 'id'>{
   tokens: string;
   @ApiProperty({ example: 1 })
   userId: number;
+  @ApiProperty({ example: 'some description' })
+  description: string;
 }
