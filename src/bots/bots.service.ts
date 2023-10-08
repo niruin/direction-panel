@@ -2,7 +2,7 @@ import {BadRequestException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/sequelize';
 
 import {Response} from '../interfaces/interface'
-import {Bot, IBot} from './models/bot.model';
+import {Bot} from './models/bot.model';
 import {BotsAllResponse} from './interfaces/bots.interface';
 import {UpdateBotDto} from './dto/update-bot.dto';
 import {CreateBotDto} from './dto/create-bot.dto';
