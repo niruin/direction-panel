@@ -71,7 +71,7 @@ export class BotCheckService {
 
   async addBots(tokens: string, userId: number) {
     const arrBotTokens = tokens.split(';').filter(Boolean);
-    console.log(arrBotTokens);
+
     const newBotCheckGroup: CreateBotCheckGroupDto = {
       tokens: tokens,
       userId: userId,
@@ -80,7 +80,12 @@ export class BotCheckService {
     const botCheckGroup = await this.botCheckGroupModel.create({...newBotCheckGroup})
 
     const promises = arrBotTokens.map(item => {
-      return this.createPromise(item)
+      const checkBotPromise = this.createPromise(item);
+      return new Promise(function (resolve, reject) {
+        setTimeout(function() {
+          return resolve(checkBotPromise);
+        }, 100);
+      });
     })
 
     const resultPromises = await Promise.allSettled(promises);
@@ -88,7 +93,6 @@ export class BotCheckService {
     resultPromises.forEach((item) => {
       //@ts-ignore
       const {status: statusMain, value} = item;
-      console.log(item);
       if(statusMain === 'rejected') {
         const newBotCheck: Omit<IBotCheck, 'id'> = {
           groupId: botCheckGroup.id,
@@ -100,11 +104,14 @@ export class BotCheckService {
         return;
       }
 
+      console.log(value);
+      //@ts-ignore
       const {status, response, token} = value;
       if (status === 'failed') {
         const newBotCheck: Omit<IBotCheck, 'id'> = {
           groupId: botCheckGroup.id,
           username: null,
+          //@ts-ignore
           token: value.token,
           ok: false,
         }
@@ -130,8 +137,13 @@ export class BotCheckService {
     try {
       const url = `https://api.telegram.org/bot${botToken}/getMe`;
       const promise = await this.httpService.get(url, {
+        // proxy: {
+        //   protocol: 'http',
+        //   host: '64.201.163.133',
+        //   port: 80,
+        // },
         proxy: false,
-        httpAgent: new HttpsProxyAgent('http://64.201.163.133:80')
+        httpsAgent: new HttpsProxyAgent('http://3.144.200.213:3128')
       })
       const result = await promise.toPromise()
 
