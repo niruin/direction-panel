@@ -2,9 +2,8 @@ import {BadRequestException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/sequelize';
 
 import {Response} from '../interfaces/interface'
-import {Proxy} from './model/proxy.model';
+import {EnumBotCheckPeriodHours, Proxy} from './model/proxy.model';
 import {UpdateProxyDto} from './dto/update-proxy.dto';
-import {BotLogsAllResponse} from '../bot-logs/interfaces/bot-logs';
 import {ProxyAllResponse} from './interfaces/proxy.interface';
 
 @Injectable()
@@ -23,6 +22,7 @@ export class ProxyService {
     });
   }
 
+  //TODO на рефактор
   async findAll(): Promise<ProxyAllResponse> {
     const response = await this.proxyModel.findAll({ raw: true}).catch((error) => {
       throw new BadRequestException({
@@ -33,11 +33,38 @@ export class ProxyService {
       })
     });
 
+    if(response.length === 0) {
+      const initialProxyData: UpdateProxyDto = {
+        botCheckPeriod: EnumBotCheckPeriodHours.h6,
+        requestDelayMs: 100,
+        port: 80,
+        protocol: 'http',
+        ip: 'localhost-example',
+        autoBotCheck: true,
+      }
+      await this.proxyModel.create({...initialProxyData})
+      const response = await this.proxyModel.findAll({ raw: true}).catch((error) => {
+        throw new BadRequestException({
+          status: 'error',
+          message: ['Не удалось загрузить данные'],
+          statusCode: HttpStatus.BAD_REQUEST,
+          error: error.message,
+        })
+      });
+
+      return {
+        status: 'success',
+        message: ['Данные получены'],
+        statusCode: HttpStatus.OK,
+        data: [{...response[0], autoBotCheck: Boolean(response[0].autoBotCheck)}]
+      }
+    }
+
     return {
       status: 'success',
       message: ['Данные получены'],
       statusCode: HttpStatus.OK,
-      data: response
+      data: [{...response[0], autoBotCheck: Boolean(response[0].autoBotCheck)}]
     }
   }
 

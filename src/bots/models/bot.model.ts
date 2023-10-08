@@ -1,6 +1,11 @@
-import {BelongsTo, Column, CreatedAt, ForeignKey, Model, Table} from 'sequelize-typescript';
+import {BelongsTo, Column, CreatedAt, DataType, ForeignKey, Model, Table} from 'sequelize-typescript';
 import {DataTypes} from 'sequelize';
 import {Partner} from '../../partners/models/partner.model';
+
+export enum EnumBotStatus {
+  active='active',
+  blocked='blocked'
+}
 
 export interface IBot {
   id: number;
@@ -8,6 +13,9 @@ export interface IBot {
   token: string;
   botName: string
   employee: string;
+  status: EnumBotStatus;
+  description: string;
+  lastCheck: Date;
 }
 
 @Table({
@@ -26,6 +34,15 @@ export class Bot extends Model implements IBot {
 
   @Column({ type: DataTypes.STRING})
   employee: string;
+
+  @Column({ type:  DataType.ENUM(...Object.values(EnumBotStatus))})
+  status: EnumBotStatus;
+
+  @Column({type: DataTypes.STRING})
+  description: string;
+
+  @Column({type: DataTypes.DATE})
+  lastCheck: Date;
 
   @ForeignKey(() => Partner)
   @Column({ type: DataTypes.INTEGER})

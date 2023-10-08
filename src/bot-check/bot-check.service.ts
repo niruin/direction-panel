@@ -7,11 +7,11 @@ import {BotCheck, IBotCheck} from './models/bot-check.model';
 import {BotCheckGroup, EnumBotCheckGroupStatus} from './models/bot-check-group.model';
 import {BotCheckAllResponse, BotCheckGroupsAllResponse} from './interfaces/bot-check.interfaces';
 import {CreateBotCheckGroupDto} from './dto/create-bot-check-group.dto';
-import {HttpsProxyAgent} from 'https-proxy-agent';
 import {CreateBotCheckDto} from './dto/create-bot-check.dto';
 import {BotsService} from '../bots/bots.service';
 import {CreateBotDto} from '../bots/dto/create-bot.dto';
 import {UsersService} from '../users/users.service';
+import {EnumBotStatus} from '../bots/models/bot.model';
 
 @Injectable()
 export class BotCheckService {
@@ -141,10 +141,17 @@ export class BotCheckService {
             ok: response.ok,
           }
           this.botCheckModel.create({...newBotCheck});
-          const newBot: CreateBotDto = {token, botName:response.result.username};
 
           this.usersService.findOneById(userId).then((user) => {
-            this.botsService.create({...newBot}, user.username);
+            const newBot: CreateBotDto = {
+              token,
+              botName:response.result.username,
+              description: description,
+              status: EnumBotStatus.active,
+              lastCheck: new Date(),
+              employee: user.username,
+            };
+            this.botsService.create({...newBot});
           })
         }
       })

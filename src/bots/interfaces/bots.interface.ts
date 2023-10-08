@@ -1,7 +1,7 @@
 import {ApiProperty} from '@nestjs/swagger';
 
 import {Response} from '../../interfaces/interface';
-import {IBot} from '../models/bot.model';
+import {EnumBotStatus, IBot} from '../models/bot.model';
 
 export class BotResponseData implements IBot {
   @ApiProperty({example: 1})
@@ -16,6 +16,12 @@ export class BotResponseData implements IBot {
   botName: string;
   @ApiProperty({example: 'employee'})
   employee: string;
+  @ApiProperty({example: 'some description'})
+  description: string;
+  @ApiProperty({example: 'some date'})
+  lastCheck: Date;
+  @ApiProperty({example: EnumBotStatus.active})
+  status: EnumBotStatus;
 }
 
 export class BotsAllResponse extends Response {

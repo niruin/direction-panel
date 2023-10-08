@@ -107,8 +107,8 @@ export class BotsService {
     }
   }
 
-  async create(createBotDto: CreateBotDto, username: string): Promise<Response> {
-    const response = await this.botsModel.create({...createBotDto, employee: username});
+  async create(createBotDto: CreateBotDto): Promise<Response> {
+    const response = await this.botsModel.create({...createBotDto});
 
     const logData: CreateBotLogDto = {
       botName: createBotDto.botName,

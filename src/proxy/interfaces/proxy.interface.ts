@@ -1,7 +1,7 @@
 import {ApiProperty} from '@nestjs/swagger';
 
 import {Response} from '../../interfaces/interface';
-import {IProxy} from '../model/proxy.model';
+import {EnumBotCheckPeriodHours, IProxy} from '../model/proxy.model';
 
 export class ProxyResponseData implements IProxy {
   @ApiProperty({example: 1})
@@ -12,6 +12,12 @@ export class ProxyResponseData implements IProxy {
   port: number;
   @ApiProperty({ example: 'http' })
   protocol: string;
+  @ApiProperty({ example: EnumBotCheckPeriodHours.h3 })
+  botCheckPeriod: EnumBotCheckPeriodHours;
+  @ApiProperty({example: 100})
+  requestDelayMs: number;
+  @ApiProperty({example: true})
+  autoBotCheck: boolean;
 }
 
 export class ProxyAllResponse extends Response {

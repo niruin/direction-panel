@@ -22,10 +22,10 @@ export class BotsController {
     return this.botsService.findAll(status, Number(page), Number(size));
   }
 
-  @Post('/add')
-  create(@Request() req, @Body() createBotDto: CreateBotDto): Promise<Response> {
-    return this.botsService.create(createBotDto, req.user.username);
-  }
+  // @Post('/add')
+  // create(@Request() req, @Body() createBotDto: CreateBotDto): Promise<Response> {
+  //   return this.botsService.create(createBotDto, req.user.username);
+  // }
 
   @Put('/update')
   update(@Body() updateBotDto: UpdateBotDto): Promise<Response> {
