@@ -9,6 +9,7 @@ import {BotLogsModule} from '../bot-logs/bot-logs.module';
 @Module({
   imports: [BotLogsModule, SequelizeModule.forFeature([Bot])],
   providers: [BotsService],
-  controllers: [BotsController]
+  controllers: [BotsController],
+  exports: [BotsService]
 })
 export class BotsModule {}

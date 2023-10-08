@@ -9,6 +9,9 @@ import {BotCheckAllResponse, BotCheckGroupsAllResponse} from './interfaces/bot-c
 import {CreateBotCheckGroupDto} from './dto/create-bot-check-group.dto';
 import {HttpsProxyAgent} from 'https-proxy-agent';
 import {CreateBotCheckDto} from './dto/create-bot-check.dto';
+import {BotsService} from '../bots/bots.service';
+import {CreateBotDto} from '../bots/dto/create-bot.dto';
+import {UsersService} from '../users/users.service';
 
 @Injectable()
 export class BotCheckService {
@@ -17,7 +20,9 @@ export class BotCheckService {
     private readonly botCheckModel: typeof BotCheck,
     @InjectModel(BotCheckGroup)
     private readonly botCheckGroupModel: typeof BotCheckGroup,
-    private readonly httpService: HttpService
+    private readonly httpService: HttpService,
+    private readonly botsService: BotsService,
+    private readonly usersService: UsersService,
   ) {
   }
 
@@ -93,57 +98,62 @@ export class BotCheckService {
     }
     const botCheckGroup = await this.botCheckGroupModel.create({...newBotCheckGroup})
 
-    const promises = arrBotTokens.map(item => {
+    const promises = arrBotTokens.map((item, index) => {
       const checkBotPromise = this.createPromise(item);
-      return new Promise(function (resolve, reject) {
+      return new Promise(function (resolve) {
         setTimeout(function() {
           return resolve(checkBotPromise);
-        }, 100);
+        }, index * 400);
       });
     })
 
-    const resultPromises = await Promise.allSettled(promises);
-
-    resultPromises.forEach((item) => {
-      //@ts-ignore
-      const {status: statusMain, value} = item;
-      if(statusMain === 'rejected') {
-        const newBotCheck: Omit<IBotCheck, 'id'> = {
-          groupId: botCheckGroup.id,
-          username: null,
-          token: null,
-          ok: false,
+    const resultPromises = Promise.allSettled(promises).then((data) => {
+      data.forEach((item) => {
+        //@ts-ignore
+        const {status: statusMain, value} = item;
+        if(statusMain === 'rejected') {
+          const newBotCheck: Omit<IBotCheck, 'id'> = {
+            groupId: botCheckGroup.id,
+            username: null,
+            token: null,
+            ok: false,
+          }
+          this.botCheckModel.create({...newBotCheck})
+          return;
         }
-        this.botCheckModel.create({...newBotCheck})
-        return;
-      }
 
-      //@ts-ignore
-      const {status, response, token} = value;
-      if (status === 'failed') {
-        const newBotCheck: Omit<IBotCheck, 'id'> = {
-          groupId: botCheckGroup.id,
-          username: null,
-          //@ts-ignore
-          token: value.token,
-          ok: false,
-        }
-        this.botCheckModel.create({...newBotCheck})
-      } else {
-        const newBotCheck: Omit<IBotCheck, 'id'> = {
-          groupId: botCheckGroup.id,
-          username: response.result.username,
-          token: token,
-          ok: response.ok,
-        }
-        this.botCheckModel.create({...newBotCheck})
-      }
-    })
+        //@ts-ignore
+        const {status, response, token} = value;
+        if (status === 'failed') {
+          const newBotCheck: Omit<IBotCheck, 'id'> = {
+            groupId: botCheckGroup.id,
+            username: null,
+            //@ts-ignore
+            token: value.token,
+            ok: false,
+          }
+          this.botCheckModel.create({...newBotCheck})
+        } else {
+          const newBotCheck: Omit<IBotCheck, 'id'> = {
+            groupId: botCheckGroup.id,
+            username: response.result.username,
+            token: token,
+            ok: response.ok,
+          }
+          this.botCheckModel.create({...newBotCheck});
+          const newBot: CreateBotDto = {token, botName:response.result.username};
 
-    await this.botCheckGroupModel.update(
-      {status: EnumBotCheckGroupStatus.completed},
-      {where: {id: botCheckGroup.id}}
-    )
+          this.usersService.findOneById(userId).then((user) => {
+            this.botsService.create({...newBot}, user.username);
+          })
+        }
+      })
+
+      this.botCheckGroupModel.update(
+        {status: EnumBotCheckGroupStatus.completed},
+        {where: {id: botCheckGroup.id}}
+      )
+    });
 
     return {
       status: 'success',
@@ -161,8 +171,8 @@ export class BotCheckService {
         //   host: '64.201.163.133',
         //   port: 80,
         // },
-        proxy: false,
-        httpsAgent: new HttpsProxyAgent('http://3.144.200.213:3128')
+        // proxy: false,
+        // httpsAgent: new HttpsProxyAgent('http://3.144.200.213:3128')
       })
       const result = await promise.toPromise()
 
