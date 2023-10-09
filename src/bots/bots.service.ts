@@ -2,7 +2,7 @@ import {BadRequestException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/sequelize';
 
 import {Response} from '../interfaces/interface'
-import {Bot} from './models/bot.model';
+import {Bot, EnumBotStatus} from './models/bot.model';
 import {BotsAllResponse} from './interfaces/bots.interface';
 import {UpdateBotDto} from './dto/update-bot.dto';
 import {CreateBotDto} from './dto/create-bot.dto';
@@ -10,6 +10,10 @@ import {Partner} from '../partners/models/partner.model';
 import {IssueBotDto} from './dto/issue-bot.dto';
 import {BotLogsService} from '../bot-logs/bot-logs.service';
 import {CreateBotLogDto} from '../bot-logs/dto/create-bot-log.dto';
+import {Cron, CronExpression} from '@nestjs/schedule';
+import {HttpService} from '@nestjs/axios';
+import {SocksProxyAgent} from 'socks-proxy-agent';
+import {ProxyService} from '../proxy/proxy.service';
 
 const Op = require('sequelize').Op;
 
@@ -19,6 +23,8 @@ export class BotsService {
     @InjectModel(Bot)
     private readonly botsModel: typeof Bot,
     private readonly botLog: BotLogsService,
+    private readonly httpService: HttpService,
+    private readonly proxyService: ProxyService
   ) {
   }
 
@@ -28,6 +34,37 @@ export class BotsService {
         id,
       },
     });
+  }
+
+  async findAllActive() {
+    return await this.botsModel.findAll({where: {partnerId: null}, raw: true})
+  }
+
+  @Cron(CronExpression.EVERY_12_HOURS)
+  async updateBots() {
+    const botsList = await this.findAllActive();
+    const proxyConfig = await this.proxyService.findOne('1');
+
+    const delay = (delayInms) => {
+      return new Promise(resolve => setTimeout(resolve, delayInms));
+    };
+
+    botsList.map(async (bot, index) => {
+      const url = `https://api.telegram.org/bot${bot.token}/getMe`;
+
+      const {protocol, ip, port, requestDelayMs} = proxyConfig;
+      const proxyOptions = `${protocol}://${ip}:${port}`;
+      const httpsAgent = new SocksProxyAgent(proxyOptions);
+      const promise = this.httpService.get(url, {
+        // httpsAgent: httpsAgent
+      })
+      const result = await promise.toPromise()
+
+
+      await delay(requestDelayMs * index);
+      const status = result.data.ok ? EnumBotStatus.active : EnumBotStatus.blocked;
+      await this.botsModel.update({status, lastCheck: new Date()}, {where: {id: bot.id}})
+    })
   }
 
   async findAll(status: 'active' | 'issued', page: number, size: number): Promise<BotsAllResponse> {
@@ -188,5 +225,9 @@ export class BotsService {
       message: ['Данные обновлены'],
       statusCode: HttpStatus.OK,
     }
+  }
+
+  updateStatusBots(isGo: boolean) {
+    console.log('status', isGo);
   }
 }

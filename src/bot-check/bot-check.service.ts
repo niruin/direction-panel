@@ -12,6 +12,8 @@ import {BotsService} from '../bots/bots.service';
 import {CreateBotDto} from '../bots/dto/create-bot.dto';
 import {UsersService} from '../users/users.service';
 import {EnumBotStatus} from '../bots/models/bot.model';
+import {ProxyService} from '../proxy/proxy.service';
+import {SocksProxyAgent} from 'socks-proxy-agent';
 
 @Injectable()
 export class BotCheckService {
@@ -23,6 +25,7 @@ export class BotCheckService {
     private readonly httpService: HttpService,
     private readonly botsService: BotsService,
     private readonly usersService: UsersService,
+    private readonly proxyService: ProxyService,
   ) {
   }
 
@@ -98,12 +101,14 @@ export class BotCheckService {
     }
     const botCheckGroup = await this.botCheckGroupModel.create({...newBotCheckGroup})
 
+    const proxyConfig = await this.proxyService.findOne('1');
+    const {requestDelayMs} = proxyConfig;
     const promises = arrBotTokens.map((item, index) => {
       const checkBotPromise = this.createPromise(item);
       return new Promise(function (resolve) {
         setTimeout(function() {
           return resolve(checkBotPromise);
-        }, index * 400);
+        }, index * requestDelayMs);
       });
     })
 
@@ -172,14 +177,13 @@ export class BotCheckService {
   async createPromise(botToken) {
     try {
       const url = `https://api.telegram.org/bot${botToken}/getMe`;
+      const proxyConfig = await this.proxyService.findOne('1');
+      const {protocol, ip, port, requestDelayMs} = proxyConfig;
+      const proxyOptions = `${protocol}://${ip}:${port}`;
+      const httpsAgent = new SocksProxyAgent(proxyOptions);
+
       const promise = await this.httpService.get(url, {
-        // proxy: {
-        //   protocol: 'http',
-        //   host: '64.201.163.133',
-        //   port: 80,
-        // },
-        // proxy: false,
-        // httpsAgent: new HttpsProxyAgent('http://3.144.200.213:3128')
+        // httpsAgent: httpsAgent
       })
       const result = await promise.toPromise()
 

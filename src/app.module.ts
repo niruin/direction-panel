@@ -18,9 +18,11 @@ import {BotLogsModule} from './bot-logs/bot-logs.module';
 import * as process from 'process';
 import {ProxyModule} from './proxy/proxy.module';
 import {BotCheckModule} from './bot-check/bot-check.module';
+import {ScheduleModule} from '@nestjs/schedule';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     SequelizeModule.forRoot({
       dialect: 'mysql',
       host: process.env.MYSQLDB_HOST,

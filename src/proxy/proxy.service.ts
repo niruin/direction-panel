@@ -11,7 +11,10 @@ export class ProxyService {
   constructor(
     @InjectModel(Proxy)
     private readonly proxyModel: typeof Proxy,
+    // private readonly schedulerRegistry: SchedulerRegistry,
   ) {
+    // const job = new CronJob(CronExpression.EVERY_10_SECONDS, this.updateBots);
+    // this.schedulerRegistry.addCronJob('updateStatusBots', job);
   }
 
   findOne(id: string): Promise<Proxy> {
@@ -24,7 +27,7 @@ export class ProxyService {
 
   //TODO на рефактор
   async findAll(): Promise<ProxyAllResponse> {
-    const response = await this.proxyModel.findAll({ raw: true}).catch((error) => {
+    const response = await this.proxyModel.findAll({raw: true}).catch((error) => {
       throw new BadRequestException({
         status: 'error',
         message: ['Не удалось загрузить данные'],
@@ -33,17 +36,17 @@ export class ProxyService {
       })
     });
 
-    if(response.length === 0) {
+    if (response.length === 0) {
       const initialProxyData: UpdateProxyDto = {
-        botCheckPeriod: EnumBotCheckPeriodHours.h6,
+        botCheckPeriod: EnumBotCheckPeriodHours.h12,
         requestDelayMs: 100,
-        port: 80,
-        protocol: 'http',
-        ip: 'localhost-example',
+        port: 5508,
+        protocol: 'SOCKS5',
+        ip: '209.145.59.247',
         autoBotCheck: true,
       }
       await this.proxyModel.create({...initialProxyData})
-      const response = await this.proxyModel.findAll({ raw: true}).catch((error) => {
+      const response = await this.proxyModel.findAll({raw: true}).catch((error) => {
         throw new BadRequestException({
           status: 'error',
           message: ['Не удалось загрузить данные'],
@@ -68,7 +71,38 @@ export class ProxyService {
     }
   }
 
+  // async updateBots() {
+  //   const botsList = await this.botsService.findAllActive();
+  //   console.log(botsList.length);
+  // }
+
   async update(updateBotDto: UpdateProxyDto): Promise<Response> {
+    // let period = CronExpression.EVERY_SECOND;
+    //
+    // switch (updateBotDto.botCheckPeriod) {
+    //   case EnumBotCheckPeriodHours.h3:
+    //     period = CronExpression.EVERY_10_SECONDS;
+    //     break;
+    //   case EnumBotCheckPeriodHours.h6:
+    //     period = CronExpression.EVERY_6_HOURS;
+    //     break;
+    //   case EnumBotCheckPeriodHours.h12:
+    //     period = CronExpression.EVERY_12_HOURS;
+    //     break;
+    //   case EnumBotCheckPeriodHours.h24:
+    //     period = CronExpression.EVERY_DAY_AT_NOON;
+    // }
+    //
+    // this.schedulerRegistry.deleteCronJob('updateStatusBots');
+    // const job = new CronJob(period, this.updateBots);
+    // this.schedulerRegistry.addCronJob('updateStatusBots', job);
+    //
+    // if (updateBotDto.autoBotCheck === true) {
+    //   job.start();
+    // } else if (updateBotDto.autoBotCheck === false) {
+    //   job.stop();
+    // }
+
     const response = await this.proxyModel.update({...updateBotDto},
       {
         where: {
