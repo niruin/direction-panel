@@ -14,6 +14,10 @@ export class BotCheckGroups implements IBotCheckGroup {
   userId: number;
   @ApiProperty({example: 'something description'})
   description: string;
+  @ApiProperty({example: 42})
+  totalCreated: number;
+  @ApiProperty({example: 2})
+  totalPassed: number;
 }
 
 export class BotCheckGroupsAllResponse extends Response {

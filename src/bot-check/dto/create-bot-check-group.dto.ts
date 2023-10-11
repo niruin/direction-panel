@@ -10,4 +10,8 @@ export class CreateBotCheckGroupDto implements Omit<IBotCheckGroup, 'id'>{
   userId: number;
   @ApiProperty({ example: 'some description' })
   description: string;
+  @ApiProperty({ example: 42 })
+  totalCreated: number;
+  @ApiProperty({ example: 2 })
+  totalPassed: number;
 }

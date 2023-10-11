@@ -98,6 +98,8 @@ export class BotCheckService {
       userId: userId,
       status: EnumBotCheckGroupStatus.pending,
       description: description,
+      totalCreated: arrBotTokens.length,
+      totalPassed: 0,
     }
     const botCheckGroup = await this.botCheckGroupModel.create({...newBotCheckGroup})
 
@@ -112,59 +114,72 @@ export class BotCheckService {
       });
     })
 
-    const resultPromises = Promise.allSettled(promises).then((data) => {
+    Promise.allSettled(promises).then( async (data) => {
       data.forEach((item) => {
-        //@ts-ignore
-        const {status: statusMain, value} = item;
-        if(statusMain === 'rejected') {
-          const newBotCheck: Omit<IBotCheck, 'id'> = {
-            groupId: botCheckGroup.id,
-            username: null,
-            token: null,
-            ok: false,
+        const checkingBot = async () => {
+          //@ts-ignore
+          const {status: statusMain, value} = item;
+          if(statusMain === 'rejected') {
+            const newBotCheck: Omit<IBotCheck, 'id'> = {
+              groupId: botCheckGroup.id,
+              username: null,
+              token: null,
+              ok: false,
+            }
+            await this.botCheckModel.create({...newBotCheck})
+            return;
           }
-          this.botCheckModel.create({...newBotCheck})
-          return;
-        }
 
-        //@ts-ignore
-        const {status, response, token} = value;
-        if (status === 'failed') {
-          const newBotCheck: Omit<IBotCheck, 'id'> = {
-            groupId: botCheckGroup.id,
-            username: null,
-            //@ts-ignore
-            token: value.token,
-            ok: false,
-          }
-          this.botCheckModel.create({...newBotCheck})
-        } else {
-          const newBotCheck: Omit<IBotCheck, 'id'> = {
-            groupId: botCheckGroup.id,
-            username: response.result.username,
-            token: token,
-            ok: response.ok,
-          }
-          this.botCheckModel.create({...newBotCheck});
+          //@ts-ignore
+          const {status, response, token} = value;
+          if (status === 'failed') {
+            const newBotCheck: Omit<IBotCheck, 'id'> = {
+              groupId: botCheckGroup.id,
+              username: null,
+              //@ts-ignore
+              token: value.token,
+              ok: false,
+            }
+            await this.botCheckModel.create({...newBotCheck})
+          } else {
+            const newBotCheck: Omit<IBotCheck, 'id'> = {
+              groupId: botCheckGroup.id,
+              username: response.result.username,
+              token: token,
+              ok: response.ok,
+            }
+            await this.botCheckModel.create({...newBotCheck});
 
-          this.usersService.findOneById(userId).then((user) => {
-            const newBot: CreateBotDto = {
-              token,
-              botName:response.result.username,
-              description: description,
-              status: EnumBotStatus.active,
-              lastCheck: new Date(),
-              employee: user.username,
-            };
-            this.botsService.create({...newBot});
-          })
+            await this.usersService.findOneById(userId).then(async (user) => {
+              const newBot: CreateBotDto = {
+                token,
+                botName:response.result.username,
+                description: description,
+                status: EnumBotStatus.active,
+                lastCheck: new Date(),
+                employee: user.username,
+              };
+               await this.botsService.create({...newBot});
+            })
+          }
         }
+        checkingBot().then(async () => {
+          const botCheckListByGroupId = await this.botCheckModel.findAndCountAll(
+            {where: {groupId: botCheckGroup.id}, raw: true}
+          )
+          const totalBotsRequested = botCheckListByGroupId.count;
+          const totalBotsAdded = botCheckListByGroupId.rows.filter(item => item.ok).length;
+
+          this.botCheckGroupModel.update(
+            {
+              status: EnumBotCheckGroupStatus.completed,
+              totalCreated: totalBotsRequested,
+              totalPassed: totalBotsAdded
+            },
+            {where: {id: botCheckGroup.id}}
+          )
+        });
       })
-
-      this.botCheckGroupModel.update(
-        {status: EnumBotCheckGroupStatus.completed},
-        {where: {id: botCheckGroup.id}}
-      )
     });
 
     return {

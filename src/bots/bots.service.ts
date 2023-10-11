@@ -56,7 +56,7 @@ export class BotsService {
       const proxyOptions = `${protocol}://${ip}:${port}`;
       const httpsAgent = new SocksProxyAgent(proxyOptions);
       const promise = this.httpService.get(url, {
-        // httpsAgent: httpsAgent
+        httpsAgent: httpsAgent
       })
       const result = await promise.toPromise()
 

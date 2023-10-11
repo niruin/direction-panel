@@ -9,7 +9,9 @@ export interface IBotLog {
 }
 
 @Table({
-  tableName: 'zs_partners_bots_logs'
+  tableName: 'zs_partners_bots_logs',
+  timestamps: true,
+  createdAt: true
 })
 export class BotLog extends Model implements IBotLog {
   @Column({ type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true})

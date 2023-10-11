@@ -22,6 +22,8 @@ export class BotResponseData implements IBot {
   lastCheck: Date;
   @ApiProperty({example: EnumBotStatus.active})
   status: EnumBotStatus;
+  @ApiProperty({example: 'some date'})
+  createdAt?: Date;
 }
 
 export class BotsAllResponse extends Response {

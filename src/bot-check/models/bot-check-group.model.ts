@@ -12,6 +12,8 @@ export interface IBotCheckGroup {
   status: EnumBotCheckGroupStatus;
   userId: number;
   description: string;
+  totalCreated: number;
+  totalPassed: number;
 }
 
 @Table({
@@ -28,4 +30,8 @@ export class BotCheckGroup extends Model implements IBotCheckGroup {
   userId: number;
   @Column({type: DataTypes.STRING})
   description: string;
+  @Column({type: DataTypes.INTEGER})
+  totalCreated: number;
+  @Column({type: DataTypes.INTEGER})
+  totalPassed: number;
 }
