@@ -11,7 +11,7 @@ import {
   PartnersUpdateResponse
 } from './interfaces/partners.interface';
 import {PartnerLogsService} from '../partner-logs/partner-logs.service';
-import {CreatePartnerLogDto} from '../partner-logs/dto/create-partner-log.dto';
+import {CreatePartnerLogDto, LogEvent} from '../partner-logs/dto/create-partner-log.dto';
 
 @Injectable()
 export class PartnersService {
@@ -46,7 +46,7 @@ export class PartnersService {
     }
   }
 
-  async update(updatePartnerDto: UpdatePartnerDto, username: string): Promise<PartnersUpdateResponse> {
+  async update(updatePartnerDto: UpdatePartnerDto, username: string, event?: LogEvent): Promise<PartnersUpdateResponse> {
     const beforeUpdateUser = await this.findOne(String(updatePartnerDto.partnerid));
     const response = await this.partnerModel.update({...updatePartnerDto},
       {
@@ -64,7 +64,7 @@ export class PartnersService {
 
     const afterUpdateUser = await this.findOne(String(updatePartnerDto.partnerid));
 
-    this.partnerLogsService.createWithDetails(beforeUpdateUser.dataValues, afterUpdateUser.dataValues, 'Изменен', username)
+    this.partnerLogsService.createWithDetails(beforeUpdateUser.dataValues, afterUpdateUser.dataValues, event || 'Изменен', username)
 
     const effectedCount = response[0];
     const msg = Boolean(effectedCount) ? 'Изменения сохранены' : 'Данные не изменены';

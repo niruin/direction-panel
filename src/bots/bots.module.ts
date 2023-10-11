@@ -7,9 +7,10 @@ import {BotsController} from './bots.controller';
 import {BotLogsModule} from '../bot-logs/bot-logs.module';
 import {HttpModule} from '@nestjs/axios';
 import {ProxyModule} from '../proxy/proxy.module';
+import {PartnersModule} from '../partners/partners.module';
 
 @Module({
-  imports: [HttpModule, BotLogsModule, ProxyModule, SequelizeModule.forFeature([Bot])],
+  imports: [HttpModule, BotLogsModule, ProxyModule, PartnersModule, SequelizeModule.forFeature([Bot])],
   providers: [BotsService],
   controllers: [BotsController],
   exports: [BotsService]

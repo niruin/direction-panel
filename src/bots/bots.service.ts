@@ -1,5 +1,7 @@
 import {BadRequestException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/sequelize';
+import {Cron, CronExpression} from '@nestjs/schedule';
+import {HttpService} from '@nestjs/axios';
 
 import {Response} from '../interfaces/interface'
 import {Bot, EnumBotStatus} from './models/bot.model';
@@ -10,10 +12,10 @@ import {Partner} from '../partners/models/partner.model';
 import {IssueBotDto} from './dto/issue-bot.dto';
 import {BotLogsService} from '../bot-logs/bot-logs.service';
 import {CreateBotLogDto} from '../bot-logs/dto/create-bot-log.dto';
-import {Cron, CronExpression} from '@nestjs/schedule';
-import {HttpService} from '@nestjs/axios';
 import {SocksProxyAgent} from 'socks-proxy-agent';
 import {ProxyService} from '../proxy/proxy.service';
+import {firstValueFrom} from 'rxjs';
+import {PartnersService} from '../partners/partners.service';
 
 const Op = require('sequelize').Op;
 
@@ -24,7 +26,8 @@ export class BotsService {
     private readonly botsModel: typeof Bot,
     private readonly botLog: BotLogsService,
     private readonly httpService: HttpService,
-    private readonly proxyService: ProxyService
+    private readonly proxyService: ProxyService,
+    private readonly partnersService: PartnersService
   ) {
   }
 
@@ -41,7 +44,7 @@ export class BotsService {
   }
 
   @Cron(CronExpression.EVERY_12_HOURS)
-  async updateBots() {
+  async updateBots(): Promise<Response> {
     const botsList = await this.findAllActive();
     const proxyConfig = await this.proxyService.findOne('1');
 
@@ -49,22 +52,65 @@ export class BotsService {
       return new Promise(resolve => setTimeout(resolve, delayInms));
     };
 
-    botsList.map(async (bot, index) => {
-      const url = `https://api.telegram.org/bot${bot.token}/getMe`;
+    try {
+      botsList.map(async (bot, index) => {
+        const url = `https://api.telegram.org/bot${bot.token}/getMe`;
 
-      const {protocol, ip, port, requestDelayMs} = proxyConfig;
-      const proxyOptions = `${protocol}://${ip}:${port}`;
-      const httpsAgent = new SocksProxyAgent(proxyOptions);
-      const promise = this.httpService.get(url, {
-        httpsAgent: httpsAgent
+        const {protocol, ip, port, requestDelayMs} = proxyConfig;
+        const proxyOptions = `${protocol}://${ip}:${port}`;
+        const httpsAgent = new SocksProxyAgent(proxyOptions);
+        const promise = this.httpService.get(url, {
+          httpsAgent: httpsAgent
+        })
+
+        const result = await firstValueFrom(promise)
+
+        await delay(requestDelayMs * index);
+
+        //@ts-ignore
+        const status = result.data.ok ? EnumBotStatus.active : EnumBotStatus.blocked;
+
+        const currentBot = await this.botsModel.findOne({where: {id: bot.id}});
+
+        //Коррекция лимита
+        const updateLimitsForPartner = async () => {
+          const partner = await this.partnersService.findOne(String(currentBot.partnerID));
+          if(partner.countBotLimit > 0) {
+            this.partnersService.update({...partner, countBotLimit: partner.countBotLimit - 1}, 'System', 'Коррекция лимита')
+          }
+        }
+
+        // если поменялся статус с "active" на "blocked"
+        if(currentBot.status === EnumBotStatus.active && !result.data.ok) {
+          const newBotLog: CreateBotLogDto = {
+            botName: currentBot.botName,
+            event: 'Заблокирован',
+            partnerId: currentBot.partnerID,
+          }
+          this.botLog.create(newBotLog)
+
+          // если бот выдан партнеру"
+          if(currentBot.partnerID) {
+            updateLimitsForPartner();
+          }
+        }
+
+        await this.botsModel.update({status, lastCheck: new Date()}, {where: {id: bot.id}})
       })
-      const result = await promise.toPromise()
 
+    } catch (e) {
+      return {
+        status: 'error',
+        message: ['Не удалось обновить статусы ботов'],
+        statusCode: 200,
+      }
+    }
 
-      await delay(requestDelayMs * index);
-      const status = result.data.ok ? EnumBotStatus.active : EnumBotStatus.blocked;
-      await this.botsModel.update({status, lastCheck: new Date()}, {where: {id: bot.id}})
-    })
+    return {
+      status: 'success',
+      message: ['Статусы ботов обновлены'],
+      statusCode: 200,
+    }
   }
 
   async findAll(status: 'active' | 'issued', page: number, size: number): Promise<BotsAllResponse> {
@@ -109,7 +155,7 @@ export class BotsService {
   }
 
   async update(updateBotDto: UpdateBotDto): Promise<Response> {
-    if(updateBotDto.partnerId) {
+    if (updateBotDto.partnerId) {
       this.issue(updateBotDto, 'employer')
     }
     const response = await this.botsModel.update({...updateBotDto},
@@ -225,9 +271,5 @@ export class BotsService {
       message: ['Данные обновлены'],
       statusCode: HttpStatus.OK,
     }
-  }
-
-  updateStatusBots(isGo: boolean) {
-    console.log('status', isGo);
   }
 }

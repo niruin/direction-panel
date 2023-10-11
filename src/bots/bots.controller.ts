@@ -7,6 +7,7 @@ import {BotsAllResponse} from './interfaces/bots.interface';
 import {CreateBotDto} from './dto/create-bot.dto';
 import {UpdateBotDto} from './dto/update-bot.dto';
 import {IssueBotDto} from './dto/issue-bot.dto';
+import {ProxyAllResponse} from '../proxy/interfaces/proxy.interface';
 
 @ApiTags('Bots')
 @Controller('bots')
@@ -20,6 +21,12 @@ export class BotsController {
     const status: 'active' | 'issued' = query.status;
     const {page = 1, size = 10} = query;
     return this.botsService.findAll(status, Number(page), Number(size));
+  }
+
+  @Get('/checking')
+  @ApiOkResponse({type: Response})
+  checking(){
+    return this.botsService.updateBots();
   }
 
   // @Post('/add')

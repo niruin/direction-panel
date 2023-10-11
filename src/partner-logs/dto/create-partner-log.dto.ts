@@ -1,6 +1,6 @@
 import {IPartnerLog} from '../models/partner-log.model';
 
-export type LogEvent =  'Добавлен' | 'Изменен' | 'Удален';
+export type LogEvent =  'Добавлен' | 'Изменен' | 'Удален' | 'Коррекция лимита';
 
 export class CreatePartnerLogDto implements Omit<IPartnerLog, 'id' | 'partnerLogDetails' >{
   date: Date;

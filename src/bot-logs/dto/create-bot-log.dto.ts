@@ -1,4 +1,4 @@
-export type BotLogEvent =  'Добавлен' | 'Изменен' | 'Удален' | 'Выдан';
+export type BotLogEvent =  'Добавлен' | 'Изменен' | 'Удален' | 'Выдан' | 'Заблокирован';
 
 export class CreateBotLogDto {
   event: BotLogEvent;

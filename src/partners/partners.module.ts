@@ -10,5 +10,6 @@ import {PartnerLogsModule} from '../partner-logs/partner-logs.module';
   imports: [PartnerLogsModule, SequelizeModule.forFeature([Partner])],
   providers: [PartnersService],
   controllers: [PartnersController],
+  exports: [PartnersService],
 })
 export class PartnersModule {}

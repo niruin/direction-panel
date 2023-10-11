@@ -198,7 +198,7 @@ export class BotCheckService {
       const httpsAgent = new SocksProxyAgent(proxyOptions);
 
       const promise = await this.httpService.get(url, {
-        // httpsAgent: httpsAgent
+        httpsAgent: httpsAgent
       })
       const result = await promise.toPromise()
 
