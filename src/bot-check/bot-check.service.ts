@@ -93,33 +93,37 @@ export class BotCheckService {
     const {tokens, description} = createBotCheckDto;
     const arrBotTokens = tokens.split(';').filter(Boolean);
 
+    const uniqArrBotTokens = [...new Set(arrBotTokens)];
+
     const newBotCheckGroup: CreateBotCheckGroupDto = {
       tokens: tokens,
       userId: userId,
       status: EnumBotCheckGroupStatus.pending,
       description: description,
-      totalCreated: arrBotTokens.length,
+      totalCreated: uniqArrBotTokens.length,
       totalPassed: 0,
     }
     const botCheckGroup = await this.botCheckGroupModel.create({...newBotCheckGroup})
 
     const proxyConfig = await this.proxyService.findOne('1');
     const {requestDelayMs} = proxyConfig;
-    const promises = arrBotTokens.map((item, index) => {
+    const promises = uniqArrBotTokens.map((item, index) => {
       const checkBotPromise = this.createPromise(item);
       return new Promise(function (resolve) {
-        setTimeout(function() {
+        setTimeout(function () {
           return resolve(checkBotPromise);
         }, index * requestDelayMs);
       });
     })
 
-    Promise.allSettled(promises).then( async (data) => {
+    Promise.allSettled(promises).then(async (data) => {
+      let totalAdded = 0;
+
       data.forEach((item) => {
         const checkingBot = async () => {
           //@ts-ignore
           const {status: statusMain, value} = item;
-          if(statusMain === 'rejected') {
+          if (statusMain === 'rejected') {
             const newBotCheck: Omit<IBotCheck, 'id'> = {
               groupId: botCheckGroup.id,
               username: null,
@@ -153,13 +157,19 @@ export class BotCheckService {
             await this.usersService.findOneById(userId).then(async (user) => {
               const newBot: CreateBotDto = {
                 token,
-                botName:response.result.username,
+                botName: response.result.username,
                 description: description,
                 status: EnumBotStatus.active,
                 lastCheck: new Date(),
                 employee: user.username,
               };
-               await this.botsService.create({...newBot});
+
+              // проверка на дубликаты
+              const isHasBot = await this.botsService.findOneByToken(token);
+              if(!isHasBot) {
+                totalAdded = totalAdded + 1;
+                await this.botsService.create({...newBot});
+              }
             })
           }
         }
@@ -168,13 +178,14 @@ export class BotCheckService {
             {where: {groupId: botCheckGroup.id}, raw: true}
           )
           const totalBotsRequested = botCheckListByGroupId.count;
-          const totalBotsAdded = botCheckListByGroupId.rows.filter(item => item.ok).length;
+          // const totalBotsAdded = botCheckListByGroupId.rows.filter(item => item.ok).length;
 
           this.botCheckGroupModel.update(
             {
               status: EnumBotCheckGroupStatus.completed,
               totalCreated: totalBotsRequested,
-              totalPassed: totalBotsAdded
+              // totalPassed: totalBotsAdded
+              totalPassed: totalAdded
             },
             {where: {id: botCheckGroup.id}}
           )
@@ -202,13 +213,13 @@ export class BotCheckService {
       })
       const result = await promise.toPromise()
 
-      return  {
+      return {
         status: 'success',
         token: botToken,
         response: result.data,
       };
     } catch (e) {
-      return  {
+      return {
         status: 'failed',
         token: botToken,
         response: e.response.data,

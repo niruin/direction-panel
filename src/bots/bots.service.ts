@@ -39,6 +39,14 @@ export class BotsService {
     });
   }
 
+  findOneByToken(token: string): Promise<Bot> {
+    return this.botsModel.findOne({
+      where: {
+        token,
+      },
+    });
+  }
+
   async findAllActive() {
     return await this.botsModel.findAll({where: {partnerId: null}, raw: true})
   }
@@ -111,6 +119,10 @@ export class BotsService {
       message: ['Статусы ботов обновлены'],
       statusCode: 200,
     }
+  }
+
+  async findAllBots() {
+    return await this.botsModel.findAll({raw: true});
   }
 
   async findAll(status: 'active' | 'issued', page: number, size: number): Promise<BotsAllResponse> {
