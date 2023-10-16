@@ -64,7 +64,7 @@ export class PartnersService {
 
     const afterUpdateUser = await this.findOne(String(updatePartnerDto.partnerid));
 
-    this.partnerLogsService.createWithDetails(beforeUpdateUser.dataValues, afterUpdateUser.dataValues, event || 'Изменен', username)
+    this.partnerLogsService.createWithDetails(beforeUpdateUser, afterUpdateUser, event || 'Изменен', username)
 
     const effectedCount = response[0];
     const msg = Boolean(effectedCount) ? 'Изменения сохранены' : 'Данные не изменены';
@@ -129,6 +129,7 @@ export class PartnersService {
       where: {
         partnerid,
       },
+      raw: true,
     });
   }
 

@@ -7,4 +7,7 @@ export class UpdatePartnerDto extends CreatePartnerDto implements ICreatePartner
   @ApiProperty({example: 1})
   @IsNumber()
   readonly partnerid: number;
+
+  @IsNumber()
+  readonly fiatBalance?: number;
 }

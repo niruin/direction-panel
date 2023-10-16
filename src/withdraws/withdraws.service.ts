@@ -8,13 +8,15 @@ import {Response} from '../interfaces/interface'
 import {WithdrawLogsService} from '../withdraw-logs/withdraw-logs.service';
 import {CreateWithdrawLogDto} from '../withdraw-logs/dto/create-withdraw-log.dto';
 import {Partner} from '../partners/models/partner.model';
+import {PartnersService} from '../partners/partners.service';
 
 @Injectable()
 export class WithdrawsService {
   constructor(
     @InjectModel(Withdraw)
     private readonly withdrawsModel: typeof Withdraw,
-    private readonly withdrawLogsService: WithdrawLogsService
+    private readonly withdrawLogsService: WithdrawLogsService,
+    private readonly partnersService: PartnersService
   ) {
   }
 
@@ -95,9 +97,26 @@ export class WithdrawsService {
   }
 
   async updateStatus(executeWithdrawsDto: IUpdateStatusWithdrawsDto, username: string): Promise<Response> {
-    const cancelReason = executeWithdrawsDto.status === EnumStatus.canceled ? EnumCancelReason.operator : null;
-    const {withdrawid, ...rest} = executeWithdrawsDto;
-    const response = await this.withdrawsModel.update({...rest, cancelReason},
+    let cancelReason = null;
+    const {withdrawid, status} = executeWithdrawsDto;
+
+    if(executeWithdrawsDto.status === EnumStatus.canceled) {
+      const withdraw = await this.withdrawsModel.findOne({where: { withdrawid }});
+
+      //TODO протестировать и поправить
+      if(withdraw.status === EnumStatus.canceled) {
+        throw new BadRequestException({
+          status: 'error',
+          message: ['Данные не сохранены'],
+          statusCode: HttpStatus.BAD_REQUEST,
+          error: "Заявка уже отменена",
+        })
+      }
+
+      cancelReason = EnumCancelReason.operator;
+    }
+
+    await this.withdrawsModel.update({status, cancelReason},
       {
         where: {
           withdrawid: executeWithdrawsDto.withdrawid,
@@ -111,6 +130,14 @@ export class WithdrawsService {
       })
     });
 
+    if(status === EnumStatus.canceled) {
+      const withdraw = await this.withdrawsModel.findOne({where: { withdrawid }});
+      const partner = await this.partnersService.findOne(String(withdraw.partnerId));
+      const newFiatBalance = Number(partner.fiatBalance) + Number(withdraw.fiatamount);
+
+      await this.partnersService.update({...partner, fiatBalance: newFiatBalance}, username, 'Изменен');
+    }
+
     const logData: CreateWithdrawLogDto = {
       date: new Date(),
       withdrawId: withdrawid,
@@ -119,7 +146,7 @@ export class WithdrawsService {
       other: ''
     }
 
-    this.withdrawLogsService.create(logData)
+    await this.withdrawLogsService.create(logData)
 
     return {
       status: 'success',
