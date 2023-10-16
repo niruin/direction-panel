@@ -38,7 +38,7 @@ export interface IPartner {
 export class Partner extends Model implements IPartner {
   @Column({ type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true})
   partnerid: number;
-  @Column({ type: DataTypes.DECIMAL(20, 10)})
+  @Column({ type: DataTypes.DECIMAL(20, 10), defaultValue: 0})
   fiatBalance: number;
   @Column({ type: DataTypes.STRING})
   urlPanel: string;
