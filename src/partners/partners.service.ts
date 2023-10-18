@@ -2,7 +2,7 @@ import {BadRequestException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/sequelize';
 
 import {CreatePartnerDto} from './dto/create-partner.dto';
-import {IPartner, Partner} from './models/partner.model';
+import {EnumTariffPlan, IPartner, Partner} from './models/partner.model';
 import {UpdatePartnerDto} from './dto/update-partner.dto';
 import {
   PartnersAllResponse,
@@ -12,6 +12,9 @@ import {
 } from './interfaces/partners.interface';
 import {PartnerLogsService} from '../partner-logs/partner-logs.service';
 import {CreatePartnerLogDto, LogEvent} from '../partner-logs/dto/create-partner-log.dto';
+
+
+const Op = require('sequelize').Op;
 
 @Injectable()
 export class PartnersService {
@@ -79,7 +82,14 @@ export class PartnersService {
     }
   }
 
-  async findAll(page: number, size: number): Promise<PartnersAllResponse> {
+  async findAll(page: number, size: number, partnerId: number | null, tariffPlan: EnumTariffPlan[] | undefined): Promise<PartnersAllResponse> {
+    const optionsByPartnerId = partnerId ? {
+      where: {
+        partnerid: partnerId,
+      }
+    } : {};
+
+
     const response = await this.partnerModel.findAndCountAll(
       {
         offset: (page - 1) * size,
@@ -87,7 +97,11 @@ export class PartnersService {
         order: [
           ['partnerid', 'DESC'],
         ],
-        raw: true
+        raw: true,
+        where: {
+          ...(partnerId && {partnerid: partnerId}),
+          ...(tariffPlan && {tariffPlan: [...tariffPlan]})
+        },
       }).catch((error) => {
       throw new BadRequestException({
         status: 'error',
@@ -120,7 +134,7 @@ export class PartnersService {
       status: 'success',
       message: ['Данные получены'],
       statusCode: HttpStatus.OK,
-      data: response.sort((a, b) => b.id - a.id).map(({partnerid, partnerName}: IPartner) => ({partnerid, partnerName}))
+      data: response.map(({partnerid, partnerName}: IPartner) => ({partnerid, partnerName}))
     }
   }
 

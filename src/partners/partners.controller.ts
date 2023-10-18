@@ -32,13 +32,15 @@ export class PartnersController {
   @ApiOkResponse({type: PartnersAllResponse})
   @Get('/list')
   findAll(@Query() query): Promise<PartnersAllResponse> {
-    const {page, size} = query;
-    return this.partnersService.findAll(Number(page), Number(size));
+    const {page, size, partnerId, tariffPlan} = query;
+    const partnerIdFormat = partnerId ? Number(partnerId) : null;
+    console.log(tariffPlan);
+    return this.partnersService.findAll(Number(page), Number(size), partnerIdFormat, tariffPlan);
   }
 
   @ApiOkResponse({type: PartnersAllResponse})
   @Get('/dictionary')
-  dictionaryList(): Promise<PartnersDictionaryResponse> {
+  dictionaryList(@Query() query): Promise<PartnersDictionaryResponse> {
     return this.partnersService.dictionaryList();
   }
 
