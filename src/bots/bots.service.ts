@@ -83,13 +83,16 @@ export class BotsService {
         //Коррекция лимита
         const updateLimitsForPartner = async () => {
           const partner = await this.partnersService.findOne(String(currentBot.partnerID));
-          if(partner.countBotLimit > 0) {
-            this.partnersService.update({...partner, countBotLimit: partner.countBotLimit - 1}, 'System', 'Коррекция лимита')
+          if (partner.countBotLimit > 0) {
+            this.partnersService.update({
+              ...partner,
+              countBotLimit: partner.countBotLimit - 1
+            }, 'System', 'Коррекция лимита')
           }
         }
 
         // если поменялся статус с "active" на "blocked"
-        if(currentBot.status === EnumBotStatus.active && !result.data.ok) {
+        if (currentBot.status === EnumBotStatus.active && !result.data.ok) {
           const newBotLog: CreateBotLogDto = {
             botName: currentBot.botName,
             event: 'Заблокирован',
@@ -98,7 +101,7 @@ export class BotsService {
           this.botLog.create(newBotLog)
 
           // если бот выдан партнеру"
-          if(currentBot.partnerID) {
+          if (currentBot.partnerID) {
             updateLimitsForPartner();
           }
         }
@@ -125,12 +128,13 @@ export class BotsService {
     return await this.botsModel.findAll({raw: true});
   }
 
-  async findAll(status: 'active' | 'issued', page: number, size: number): Promise<BotsAllResponse> {
-    const options = status === 'issued' ? {where: {partnerId: {[Op.ne]: null}}} : {
-      where: {
-        partnerId: null
-      },
-    }
+  async findAll(typeBot: 'active' | 'issued', page: number, size: number, partnerId: number | null, status: EnumBotStatus[]): Promise<BotsAllResponse> {
+    //TODO рефактор
+    const options
+      = typeBot === 'issued'
+      ? {where: {partnerId: {[Op.ne]: null}, ...(partnerId && {partnerId: partnerId}), ...(status && {status: status})}}
+      : {where: {partnerId: null, ...(status && {status: status})}}
+
     const response = await this.botsModel.findAndCountAll({
       ...options,
       offset: (page - 1) * size,

@@ -18,14 +18,14 @@ export class BotsController {
   @ApiOkResponse({type: BotsAllResponse})
   @Get('/list')
   findAll(@Query() query): Promise<BotsAllResponse> {
-    const status: 'active' | 'issued' = query.status;
-    const {page = 1, size = 10} = query;
-    return this.botsService.findAll(status, Number(page), Number(size));
+    const {page = 1, size = 10, partnerId, typeBot, status} = query;
+    const partnerIdFormat = partnerId ? Number(partnerId) : null;
+    return this.botsService.findAll(typeBot, Number(page), Number(size), partnerIdFormat, status);
   }
 
   @Get('/checking')
   @ApiOkResponse({type: Response})
-  checking(){
+  checking() {
     return this.botsService.updateBots();
   }
 

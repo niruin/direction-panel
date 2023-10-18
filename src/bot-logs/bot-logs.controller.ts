@@ -13,7 +13,7 @@ export class BotLogsController {
   @ApiOkResponse({type: BotLogsAllResponse})
   @Get('/list')
   findAll(@Query() query): Promise<BotLogsAllResponse> {
-    const { page = 1, size = 10 } = query
-    return this.botLogService.findAll(Number(page), Number(size));
+    const { page = 1, size = 10, logEvent } = query
+    return this.botLogService.findAll(Number(page), Number(size), logEvent);
   }
 }

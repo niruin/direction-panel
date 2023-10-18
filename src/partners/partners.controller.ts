@@ -26,7 +26,6 @@ export class PartnersController {
 
   @Put('/update')
   update(@Request() req, @Body() updatePartnerDto: UpdatePartnerDto): Promise<Response> {
-    console.log('u---');
     return this.partnersService.update(updatePartnerDto, req.user.username);
   }
 

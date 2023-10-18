@@ -1,7 +1,7 @@
 import {BadRequestException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/sequelize';
 
-import {CreateBotLogDto} from './dto/create-bot-log.dto';
+import {BotLogEvent, CreateBotLogDto} from './dto/create-bot-log.dto';
 import {BotLog} from './models/bot-logs.model';
 import {Response} from '../interfaces/interface';
 import {BotLogsAllResponse} from './interfaces/bot-logs';
@@ -24,7 +24,7 @@ export class BotLogsService {
     }
   }
 
-  async findAll(page: number, size: number): Promise<BotLogsAllResponse> {
+  async findAll(page: number, size: number, logEvent: BotLogEvent): Promise<BotLogsAllResponse> {
     const response = await this.botLogModel.findAndCountAll(
       {
         offset: (page - 1) * size,
@@ -32,7 +32,10 @@ export class BotLogsService {
         order: [
           ['id', 'DESC'],
         ],
-        raw: true
+        raw: true,
+        where: {
+          ...(logEvent && {event: logEvent})
+        }
       }).catch((error) => {
       throw new BadRequestException({
         status: 'error',
