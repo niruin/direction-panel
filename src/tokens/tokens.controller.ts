@@ -17,8 +17,9 @@ export class TokensController {
   @ApiOkResponse({type: TokensAllResponse})
   @Get('/list')
   findAll(@Query() query): Promise<TokensAllResponse> {
-    const { page = 1, size = 10 } = query;
-    return this.tokensService.findAll(Number(page), Number(size));
+    const { page = 1, size = 10, partnerId } = query;
+    const partnerIdFormat = partnerId ? Number(partnerId) : null;
+    return this.tokensService.findAll(Number(page), Number(size), partnerIdFormat);
   }
 
   @Post('/add')

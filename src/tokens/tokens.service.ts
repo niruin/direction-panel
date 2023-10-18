@@ -24,7 +24,7 @@ export class TokensService {
     });
   }
 
-  async findAll(page: number, size: number): Promise<TokensAllResponse> {
+  async findAll(page: number, size: number, partnerId: number | null): Promise<TokensAllResponse> {
     const response = await this.tokensModel.findAndCountAll({
       include: [
         {
@@ -37,7 +37,10 @@ export class TokensService {
       order: [
         ['id', 'DESC'],
       ],
-      raw: true
+      raw: true,
+      where: {
+        ...(partnerId && {partnerid: partnerId})
+      }
     }).catch((error) => {
       throw new BadRequestException({
         status: 'error',
