@@ -26,6 +26,7 @@ export class PartnersController {
 
   @Put('/update')
   update(@Request() req, @Body() updatePartnerDto: UpdatePartnerDto): Promise<Response> {
+    console.log('u---');
     return this.partnersService.update(updatePartnerDto, req.user.username);
   }
 
@@ -34,7 +35,6 @@ export class PartnersController {
   findAll(@Query() query): Promise<PartnersAllResponse> {
     const {page, size, partnerId, tariffPlan} = query;
     const partnerIdFormat = partnerId ? Number(partnerId) : null;
-    console.log(tariffPlan);
     return this.partnersService.findAll(Number(page), Number(size), partnerIdFormat, tariffPlan);
   }
 

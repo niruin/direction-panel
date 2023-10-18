@@ -13,7 +13,8 @@ export class PartnerLogsController {
   @ApiOkResponse({type: PartnerLogsAllResponse})
   @Get('/list')
   findAll(@Query() query): Promise<PartnerLogsAllResponse> {
-    const {page = 1, size = 10} = query;
-    return this.partnerLogService.findAll(Number(page), Number(size), query.partnerId);
+    const {page = 1, size = 10, partnerId, logEvent} = query;
+    const partnerIdFormat = partnerId ? Number(partnerId) : null;
+    return this.partnerLogService.findAll(Number(page), Number(size), partnerIdFormat, logEvent);
   }
 }

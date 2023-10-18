@@ -50,8 +50,11 @@ export class PartnersService {
   }
 
   async update(updatePartnerDto: UpdatePartnerDto, username: string, event?: LogEvent): Promise<PartnersUpdateResponse> {
+    console.log('*-*-*-');
     const beforeUpdateUser = await this.findOne(String(updatePartnerDto.partnerid));
-    const response = await this.partnerModel.update({...updatePartnerDto},
+    console.log('a', beforeUpdateUser.fiatBalance);
+    console.log('b', updatePartnerDto.fiatBalance);
+    const response = await this.partnerModel.update({fiatBalance: beforeUpdateUser.fiatBalance, ...updatePartnerDto},
       {
         where: {
           partnerid: updatePartnerDto.partnerid,

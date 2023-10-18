@@ -1,5 +1,5 @@
 import {ApiProperty} from '@nestjs/swagger';
-import {IsNumber} from 'class-validator';
+import {IsNumber, IsOptional} from 'class-validator';
 
 import {CreatePartnerDto, ICreatePartner} from './create-partner.dto';
 
@@ -9,5 +9,6 @@ export class UpdatePartnerDto extends CreatePartnerDto implements ICreatePartner
   readonly partnerid: number;
 
   @IsNumber()
+  @IsOptional()
   readonly fiatBalance?: number;
 }

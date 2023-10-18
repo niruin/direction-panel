@@ -54,7 +54,7 @@ export class PartnerLogsService {
     }
   }
 
-  async findAll(page: number, size: number, partnerId?: string,): Promise<PartnerLogsAllResponse> {
+  async findAll(page: number, size: number, partnerId: number | null, logEvent: LogEvent[]): Promise<PartnerLogsAllResponse> {
     let options = {};
     if (partnerId) {
       options = {
@@ -66,13 +66,16 @@ export class PartnerLogsService {
 
     const response = await this.partnerLogModel.findAndCountAll(
       {
-        ...options,
         offset: (page - 1) * size,
         limit: size,
         order: [
           ['id', 'DESC'],
         ],
-        raw: true
+        raw: true,
+        where: {
+          ...(partnerId && {partnerId: partnerId}),
+          ...(logEvent && {event: [...logEvent]})
+        }
       }).catch((error) => {
       throw new BadRequestException({
         status: 'error',
