@@ -5,6 +5,8 @@ import {WithdrawLog} from './models/withdraw-log.model';
 import {WithdrawLogsResponse, WithdrawLogsResponseData} from './interfaces/withdraw-logs.interface';
 import {CreateWithdrawLogDto} from './dto/create-withdraw-log.dto';
 import {Response} from '../interfaces/interface';
+import {EnumTariffPlan} from '../partners/models/partner.model';
+import {EnumStatus} from '../withdraws/models/withdraws.model';
 
 @Injectable()
 export class WithdrawLogsService {
@@ -24,23 +26,18 @@ export class WithdrawLogsService {
     }
   }
 
-  async findAll(page: number, size: number, withdrawId?: string): Promise<WithdrawLogsResponse> {
-    let options = {};
-    if (withdrawId) {
-      options = {
-        ...options, where: {
-          withdrawId: Number(withdrawId),
-        },
-      }
-    }
-
+  async findAll(page: number, size: number, withdrawId?: string, event?: EnumStatus[] | undefined): Promise<WithdrawLogsResponse> {
     const response = await this.withdrawLogModel.findAndCountAll({
-      ...options,
       offset: (page - 1) * size,
       limit: size,
       order: [
         ['id', 'DESC'],
-      ], raw: true
+      ],
+      raw: true,
+      where: {
+        ...(withdrawId && {withdrawId: Number(withdrawId)}),
+        ...(event && {event: event})
+      }
     }).catch((error) => {
       throw new BadRequestException({
         status: 'error',

@@ -2,7 +2,6 @@ import {ApiProperty} from '@nestjs/swagger';
 import {IWithdrawLog} from '../models/withdraw-log.model';
 import {EnumStatus} from '../../withdraws/models/withdraws.model';
 import {Response} from '../../interfaces/interface';
-import {TokenResponseData} from '../../tokens/interfaces/tokens.interface';
 
 export class WithdrawLogsResponseData implements IWithdrawLog {
   @ApiProperty({example: 1})
