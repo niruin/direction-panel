@@ -20,7 +20,7 @@ export class WithdrawsService {
   ) {
   }
 
-  async findAll(page: number, size: number): Promise<WithdrawsAllResponse> {
+  async findAll(page: number, size: number,  partnerId: number | null, status: EnumStatus[]): Promise<WithdrawsAllResponse> {
     const response = await this.withdrawsModel.findAndCountAll({
       include: [
         {
@@ -34,6 +34,10 @@ export class WithdrawsService {
         ['withdrawid', 'DESC'],
       ],
       raw: true,
+      where: {
+        ...(partnerId && {partnerId: partnerId}),
+        ...(status && {status: status}),
+      }
     }).catch((error) => {
       throw new BadRequestException({
         status: 'error',

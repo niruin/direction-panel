@@ -15,8 +15,9 @@ export class WithdrawsController {
   @ApiOkResponse({type: WithdrawsAllResponse})
   @Get('/list')
   findAll(@Query() query): Promise<WithdrawsAllResponse> {
-    const { page = 1, size = 10} = query;
-    return  this.withdrawsService.findAll(Number(page), Number(size));
+    const { page = 1, size = 10, partnerId, status} = query;
+    const partnerIdFormat = partnerId ? Number(partnerId) : null;
+    return  this.withdrawsService.findAll(Number(page), Number(size), partnerIdFormat, status);
   }
 
   @ApiOkResponse({type: Response})

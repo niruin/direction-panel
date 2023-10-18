@@ -86,13 +86,6 @@ export class PartnersService {
   }
 
   async findAll(page: number, size: number, partnerId: number | null, tariffPlan: EnumTariffPlan[] | undefined): Promise<PartnersAllResponse> {
-    const optionsByPartnerId = partnerId ? {
-      where: {
-        partnerid: partnerId,
-      }
-    } : {};
-
-
     const response = await this.partnerModel.findAndCountAll(
       {
         offset: (page - 1) * size,
