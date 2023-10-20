@@ -129,12 +129,25 @@ export class BotsService {
     return await this.botsModel.findAll({raw: true});
   }
 
-  async findAll(typeBot: 'active' | 'issued', page: number, size: number, partnerId: number | null, status: EnumBotStatus[]): Promise<BotsAllResponse> {
+  async findAll(typeBot: 'active' | 'issued', page: number, size: number, partnerId: number | null, status: EnumBotStatus[], employeeId: number | null): Promise<BotsAllResponse> {
     //TODO рефактор
     const options
       = typeBot === 'issued'
-      ? {where: {partnerID: {[Op.ne]: null}, ...(partnerId && {partnerID: partnerId}), ...(status && {status: status})}}
-      : {where: {partnerID: null, ...(status && {status: status})}}
+      ? {
+        where: {
+          partnerID: {[Op.ne]: null},
+          ...(partnerId && {partnerID: partnerId}),
+          ...(status && {status: status}),
+          ...(employeeId && {employeeId: employeeId}),
+        }
+      }
+      : {
+        where: {
+          partnerID: null,
+          ...(status && {status: status}),
+          ...(employeeId && {employeeId: employeeId}),
+        }
+      }
 
     const response = await this.botsModel.findAndCountAll({
       ...options,

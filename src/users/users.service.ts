@@ -1,10 +1,11 @@
 import {BadRequestException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/sequelize';
 
-import {User} from './models/users.model';
+import {IUser, User} from './models/users.model';
 import {CreateUserDto} from './dto/create-user.dto';
 import {Response} from '../interfaces/interface';
-import {UserResponseType} from './interfaces/users.interface';
+import {UserDictionaryResponse, UserResponseType} from './interfaces/users.interface';
+import {IPartner} from '../partners/models/partner.model';
 
 @Injectable()
 export class UsersService {
@@ -40,6 +41,24 @@ export class UsersService {
 
     // @ts-ignore
     return result.sort((a,b) => b.id - a.id);
+  }
+
+  async dictionaryList(): Promise<UserDictionaryResponse> {
+    const response = await this.userModel.findAll({raw: true}).catch((error) => {
+      throw new BadRequestException({
+        status: 'error',
+        message: ['Не удалось загрузить данные'],
+        statusCode: HttpStatus.BAD_REQUEST,
+        error: error.message,
+      })
+    });
+
+    return {
+      status: 'success',
+      message: ['Данные получены'],
+      statusCode: HttpStatus.OK,
+      data: response.map(({id, username}: IUser) => ({id, username}))
+    }
   }
 
   findOneById(id: number): Promise<User> {

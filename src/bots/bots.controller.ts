@@ -16,9 +16,10 @@ export class BotsController {
   @ApiOkResponse({type: BotsAllResponse})
   @Get('/list')
   findAll(@Query() query): Promise<BotsAllResponse> {
-    const {page = 1, size = 10, partnerId, typeBot, status} = query;
+    const {page = 1, size = 10, partnerId, typeBot, status, employeeId} = query;
     const partnerIdFormat = partnerId ? Number(partnerId) : null;
-    return this.botsService.findAll(typeBot, Number(page), Number(size), partnerIdFormat, status);
+    const employeeIdFormat = employeeId ? Number(employeeId) : null;
+    return this.botsService.findAll(typeBot, Number(page), Number(size), partnerIdFormat, status, employeeIdFormat);
   }
 
   @Get('/checking')
