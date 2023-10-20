@@ -11,9 +11,8 @@ export class CreateBotDto implements Omit<IBot, 'id' | 'partnerID'>{
   @ApiProperty({ example: 'zametka descripton' })
   readonly description: string;
 
-  //TODO при возможности заменить на employeeId
-  @ApiProperty({ example: 'employee name' })
-  readonly employee: string;
+  @ApiProperty({ example: 1 })
+  readonly employeeId: number;
 
   @ApiProperty({ example: 'some date' })
   readonly lastCheck: Date;

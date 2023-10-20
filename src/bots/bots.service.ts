@@ -16,6 +16,7 @@ import {SocksProxyAgent} from 'socks-proxy-agent';
 import {ProxyService} from '../proxy/proxy.service';
 import {firstValueFrom} from 'rxjs';
 import {PartnersService} from '../partners/partners.service';
+import {User} from '../users/models/users.model';
 
 const Op = require('sequelize').Op;
 
@@ -132,8 +133,8 @@ export class BotsService {
     //TODO рефактор
     const options
       = typeBot === 'issued'
-      ? {where: {partnerId: {[Op.ne]: null}, ...(partnerId && {partnerId: partnerId}), ...(status && {status: status})}}
-      : {where: {partnerId: null, ...(status && {status: status})}}
+      ? {where: {partnerID: {[Op.ne]: null}, ...(partnerId && {partnerID: partnerId}), ...(status && {status: status})}}
+      : {where: {partnerID: null, ...(status && {status: status})}}
 
     const response = await this.botsModel.findAndCountAll({
       ...options,
@@ -147,7 +148,11 @@ export class BotsService {
         {
           model: Partner,
           attributes: ['partnerName'],
-        }
+        },
+        {
+          model: User,
+          attributes: ['username'],
+        },
       ]
     }).catch((error) => {
       throw new BadRequestException({
@@ -162,17 +167,19 @@ export class BotsService {
       status: 'success',
       message: ['Данные получены'],
       statusCode: HttpStatus.OK,
-      data: response.rows.map(item => ({
-        ...item,
-        partnerName: item.partner?.partnerName,
-      })),
+      data: response.rows.map(item =>
+        ({
+          ...item,
+          partnerName: item['partner.partnerName'],
+          employeeName: item['employee.username']
+        })),
       totalPages: response.count
     }
   }
 
   async update(updateBotDto: UpdateBotDto): Promise<Response> {
     if (updateBotDto.partnerId) {
-      this.issue(updateBotDto, 'employer')
+      this.issue(updateBotDto)
     }
     const response = await this.botsModel.update({...updateBotDto},
       {
@@ -188,6 +195,7 @@ export class BotsService {
       })
     });
 
+    //TODO добавить employeeId
     const logData: CreateBotLogDto = {
       botName: updateBotDto.botName,
       event: 'Изменен',
@@ -223,7 +231,7 @@ export class BotsService {
     }
   }
 
-  async remove(id: string, username: string): Promise<Response> {
+  async remove(id: string): Promise<Response> {
     const bot = await this.findOne(id);
 
     if (!bot) {
@@ -237,6 +245,7 @@ export class BotsService {
 
     await bot.destroy();
 
+    //TODO добавить employeeId
     const logData: CreateBotLogDto = {
       botName: bot.botName,
       event: 'Удален',
@@ -252,7 +261,7 @@ export class BotsService {
     }
   }
 
-  async issue(issueBotDto: IssueBotDto, username: string): Promise<Response> {
+  async issue(issueBotDto: IssueBotDto): Promise<Response> {
     const {id, ...restData} = issueBotDto;
     const data = {
       ...restData,
@@ -273,6 +282,7 @@ export class BotsService {
       })
     });
 
+    //TODO добавить employeeId
     const logData: CreateBotLogDto = {
       botName: issueBotDto.botName,
       event: 'Выдан',
@@ -280,7 +290,6 @@ export class BotsService {
     }
 
     await this.botLog.create(logData)
-
 
     return {
       status: 'success',

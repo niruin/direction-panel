@@ -1,6 +1,7 @@
 import {BelongsTo, Column, CreatedAt, DataType, ForeignKey, Model, Table} from 'sequelize-typescript';
 import {DataTypes} from 'sequelize';
 import {Partner} from '../../partners/models/partner.model';
+import {User} from '../../users/models/users.model';
 
 export enum EnumBotStatus {
   active='active',
@@ -12,7 +13,7 @@ export interface IBot {
   partnerID: number;
   token: string;
   botName: string
-  employee: string;
+  employeeId: number;
   status: EnumBotStatus;
   description: string;
   lastCheck: Date;
@@ -32,9 +33,6 @@ export class Bot extends Model implements IBot {
   @Column({ type: DataTypes.STRING})
   botName: string;
 
-  @Column({ type: DataTypes.STRING})
-  employee: string;
-
   @Column({ type:  DataType.ENUM(...Object.values(EnumBotStatus))})
   status: EnumBotStatus;
 
@@ -50,4 +48,12 @@ export class Bot extends Model implements IBot {
 
   @BelongsTo(() => Partner)
   partner: Partner;
+
+
+  @ForeignKey(() => User)
+  @Column({ type: DataTypes.INTEGER})
+  employeeId: number;
+
+  @BelongsTo(() => User)
+  employee: User;
 }

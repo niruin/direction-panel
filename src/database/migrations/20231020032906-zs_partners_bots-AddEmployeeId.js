@@ -9,7 +9,11 @@ module.exports = {
     return [
       await queryInterface.addColumn('zs_partners_bots', 'employeeId', {
         type: Sequelize.INTEGER,
-        after: 'botName'
+        after: 'botName',
+        references: {
+          model: 'zs_users',
+          key: 'id'
+        }
       }),
       await queryInterface.sequelize.query(queryUp),
       await queryInterface.removeColumn('zs_partners_bots', 'employee'),

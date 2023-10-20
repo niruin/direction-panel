@@ -14,8 +14,10 @@ export class BotResponseData implements IBot {
   partnerName: string;
   @ApiProperty({example: 'botName'})
   botName: string;
-  @ApiProperty({example: 'employee'})
-  employee: string;
+  @ApiProperty({example: 1})
+  employeeId: number;
+  @ApiProperty({example: 'employeeName'})
+  employeeName: string;
   @ApiProperty({example: 'some description'})
   description: string;
   @ApiProperty({example: 'some date'})

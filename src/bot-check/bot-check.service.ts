@@ -154,23 +154,21 @@ export class BotCheckService {
             }
             await this.botCheckModel.create({...newBotCheck});
 
-            await this.usersService.findOneById(userId).then(async (user) => {
-              const newBot: CreateBotDto = {
-                token,
-                botName: response.result.username,
-                description: description,
-                status: EnumBotStatus.active,
-                lastCheck: new Date(),
-                employee: user.username,
-              };
+            const newBot: CreateBotDto = {
+              token,
+              botName: response.result.username,
+              description: description,
+              status: EnumBotStatus.active,
+              lastCheck: new Date(),
+              employeeId: userId,
+            };
 
-              // проверка на дубликаты
-              const isHasBot = await this.botsService.findOneByToken(token);
-              if(!isHasBot) {
-                totalAdded = totalAdded + 1;
-                await this.botsService.create({...newBot});
-              }
-            })
+            // проверка на дубликаты
+            const isHasBot = await this.botsService.findOneByToken(token);
+            if (!isHasBot) {
+              totalAdded = totalAdded + 1;
+              await this.botsService.create({...newBot});
+            }
           }
         }
         checkingBot().then(async () => {
@@ -178,13 +176,11 @@ export class BotCheckService {
             {where: {groupId: botCheckGroup.id}, raw: true}
           )
           const totalBotsRequested = botCheckListByGroupId.count;
-          // const totalBotsAdded = botCheckListByGroupId.rows.filter(item => item.ok).length;
 
           this.botCheckGroupModel.update(
             {
               status: EnumBotCheckGroupStatus.completed,
               totalCreated: totalBotsRequested,
-              // totalPassed: totalBotsAdded
               totalPassed: totalAdded
             },
             {where: {id: botCheckGroup.id}}
