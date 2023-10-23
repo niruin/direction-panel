@@ -1,7 +1,7 @@
 'use strict';
 
-const queryUp = 'UPDATE panelDatabase.zs_partners_bots BOTS, panelDatabase.zs_users USERS SET BOTS.employeeId = USERS.id WHERE BOTS.employee = USERS.username;'
-const queryDown = 'UPDATE panelDatabase.zs_partners_bots BOTS, panelDatabase.zs_users USERS SET BOTS.employee = USERS.username WHERE BOTS.employeeId = USERS.id;'
+const queryUp = 'UPDATE zs_partners_bots BOTS, zs_users USERS SET BOTS.employeeId = USERS.id WHERE BOTS.employee = USERS.username;'
+const queryDown = 'UPDATE zs_partners_bots BOTS, zs_users USERS SET BOTS.employee = USERS.username WHERE BOTS.employeeId = USERS.id;'
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
