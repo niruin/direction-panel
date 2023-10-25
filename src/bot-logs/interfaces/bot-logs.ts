@@ -18,5 +18,5 @@ export class BotLogsAllResponse extends Response {
   @ApiProperty({type: [BotLogsResponseData]})
   data: BotLogsResponseData[];
   @ApiProperty({example: 42})
-  totalPages: number;
+  totalCount: number;
 }

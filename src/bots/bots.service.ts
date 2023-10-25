@@ -186,7 +186,7 @@ export class BotsService {
           partnerName: item['partner.partnerName'],
           employeeName: item['employee.username']
         })),
-      totalPages: response.count
+      totalCount: response.count
     }
   }
 

@@ -90,7 +90,7 @@ export class PartnerLogsService {
       message: ['Данные получены'],
       statusCode: HttpStatus.OK,
       data: response.rows,
-      totalPages: response.count
+      totalCount: response.count
     }
   }
 }

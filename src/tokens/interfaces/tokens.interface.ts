@@ -17,5 +17,5 @@ export class TokensAllResponse extends Response {
   @ApiProperty({type: [TokenResponseData]})
   data: TokenResponseData[];
   @ApiProperty({example: 42})
-  totalPages: number;
+  totalCount: number;
 }

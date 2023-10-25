@@ -22,5 +22,5 @@ export class WithdrawLogsResponse extends Response {
   @ApiProperty({type: [WithdrawLogsResponseData]})
   data: WithdrawLogsResponseData[];
   @ApiProperty({example: 42})
-  totalPages: number;
+  totalCount: number;
 }

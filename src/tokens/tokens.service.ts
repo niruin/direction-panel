@@ -60,7 +60,7 @@ export class TokensService {
           partnerName: item['partner.partnerName']
         }
       )),
-      totalPages: response.count
+      totalCount: response.count
     }
   }
 

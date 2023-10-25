@@ -24,7 +24,7 @@ export class BotCheckGroupsAllResponse extends Response {
   @ApiProperty({type: [BotCheckGroups]})
   data: BotCheckGroups[];
   @ApiProperty({example: 42})
-  totalPages: number;
+  totalCount: number;
 }
 
 export class BotCheck implements IBotCheck {
@@ -44,5 +44,5 @@ export class BotCheckAllResponse extends Response {
   @ApiProperty({type: [BotCheck]})
   data: BotCheck[];
   @ApiProperty({example: 42})
-  totalPages: number;
+  totalCount: number;
 }

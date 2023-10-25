@@ -57,7 +57,7 @@ export class WithdrawsService {
           partnerName: item['partner.partnerName']
         }
       )),
-      totalPages: response.count
+      totalCount: response.count
     }
   }
 
