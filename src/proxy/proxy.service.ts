@@ -36,32 +36,32 @@ export class ProxyService {
       })
     });
 
-    if (response.length === 0) {
-      const initialProxyData: UpdateProxyDto = {
-        botCheckPeriod: EnumBotCheckPeriodHours.h12,
-        requestDelayMs: 100,
-        port: 5508,
-        protocol: 'SOCKS5',
-        ip: '209.145.59.247',
-        autoBotCheck: true,
-      }
-      await this.proxyModel.create({...initialProxyData})
-      const response = await this.proxyModel.findAll({raw: true}).catch((error) => {
-        throw new BadRequestException({
-          status: 'error',
-          message: ['Не удалось загрузить данные'],
-          statusCode: HttpStatus.BAD_REQUEST,
-          error: error.message,
-        })
-      });
-
-      return {
-        status: 'success',
-        message: ['Данные получены'],
-        statusCode: HttpStatus.OK,
-        data: [{...response[0], autoBotCheck: Boolean(response[0].autoBotCheck)}]
-      }
-    }
+    // if (response.length === 0) {
+    //   const initialProxyData: UpdateProxyDto = {
+    //     botCheckPeriod: EnumBotCheckPeriodHours.h12,
+    //     requestDelayMs: 100,
+    //     port: 5508,
+    //     protocol: 'SOCKS5',
+    //     ip: '209.145.59.247',
+    //     autoBotCheck: true,
+    //   }
+    //   await this.proxyModel.create({...initialProxyData})
+    //   const response = await this.proxyModel.findAll({raw: true}).catch((error) => {
+    //     throw new BadRequestException({
+    //       status: 'error',
+    //       message: ['Не удалось загрузить данные'],
+    //       statusCode: HttpStatus.BAD_REQUEST,
+    //       error: error.message,
+    //     })
+    //   });
+    //
+    //   return {
+    //     status: 'success',
+    //     message: ['Данные получены'],
+    //     statusCode: HttpStatus.OK,
+    //     data: [{...response[0], autoBotCheck: Boolean(response[0].autoBotCheck)}]
+    //   }
+    // }
 
     return {
       status: 'success',
