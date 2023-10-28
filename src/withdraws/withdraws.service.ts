@@ -2,7 +2,7 @@ import {BadRequestException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/sequelize';
 
 import {EnumCancelReason, EnumStatus, Withdraw} from './models/withdraws.model';
-import {WithdrawsAllResponse} from './interfaces/withdraws.interface';
+import {WithdrawsAllResponse, WithdrawsSendingCountResponse} from './interfaces/withdraws.interface';
 import {IExecuteWithdrawsDto, IUpdateStatusWithdrawsDto} from './dto/execute-withdraws.dto';
 import {Response} from '../interfaces/interface'
 import {WithdrawLogsService} from '../withdraw-logs/withdraw-logs.service';
@@ -61,6 +61,28 @@ export class WithdrawsService {
     }
   }
 
+  async sendingCount(): Promise<WithdrawsSendingCountResponse> {
+    const response = await this.withdrawsModel.findAndCountAll({
+      where: {
+        status: EnumStatus.sending
+      }
+    }).catch((error) => {
+      throw new BadRequestException({
+        status: 'error',
+        message: ['Не удалось загрузить данные'],
+        statusCode: HttpStatus.BAD_REQUEST,
+        error: error.message,
+      })
+    });
+
+    return {
+      status: 'success',
+      message: ['Данные получены'],
+      statusCode: HttpStatus.OK,
+      data: response.count,
+    }
+  }
+
   async execute(executeWithdrawsDto: IExecuteWithdrawsDto, username: string): Promise<Response> {
     const {withdrawid, ...restData} = executeWithdrawsDto;
     const data = {
@@ -69,7 +91,7 @@ export class WithdrawsService {
       sendTime: new Date(),
     };
 
-    const response = await this.withdrawsModel.update({...data},
+    await this.withdrawsModel.update({...data},
       {
         where: {
           withdrawid: withdrawid,

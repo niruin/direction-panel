@@ -2,7 +2,7 @@ import {ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {Body, Controller, Get, Put, Query, Request} from '@nestjs/common';
 
 import {WithdrawsService} from './withdraws.service';
-import {WithdrawsAllResponse} from './interfaces/withdraws.interface';
+import {WithdrawsAllResponse, WithdrawsSendingCountResponse} from './interfaces/withdraws.interface';
 import {Response} from '../interfaces/interface';
 import {ExecuteWithdrawsDto, UpdateStatusWithdrawsDto} from './dto/execute-withdraws.dto';
 
@@ -18,6 +18,12 @@ export class WithdrawsController {
     const { page = 1, size = 10, partnerId, status} = query;
     const partnerIdFormat = partnerId ? Number(partnerId) : null;
     return  this.withdrawsService.findAll(Number(page), Number(size), partnerIdFormat, status);
+  }
+
+  @ApiOkResponse({type: WithdrawsSendingCountResponse})
+  @Get('/sending-count')
+  sendingCount(@Query() query): Promise<WithdrawsSendingCountResponse> {
+    return  this.withdrawsService.sendingCount();
   }
 
   @ApiOkResponse({type: Response})

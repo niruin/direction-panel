@@ -1,5 +1,5 @@
-import {Response} from '../../interfaces/interface';
 import {ApiProperty} from '@nestjs/swagger';
+import {Response} from '../../interfaces/interface';
 import {EnumCancelReason, EnumStatus, EnumTypeWithdraw, IWithdraw} from '../models/withdraws.model';
 
 export class WithdrawsAllResponseData implements IWithdraw {
@@ -40,4 +40,9 @@ export class WithdrawsAllResponse extends Response {
   data: WithdrawsAllResponseData[];
   @ApiProperty({example: 42})
   totalCount: number;
+}
+
+export class WithdrawsSendingCountResponse extends Response {
+  @ApiProperty({example: 8})
+  data: number;
 }
