@@ -25,16 +25,15 @@ export class PartnersService {
   ) {
   }
 
-  async create(createPartnerDto: CreatePartnerDto, username: string): Promise<PartnersCreateResponse> {
+  async create(createPartnerDto: CreatePartnerDto, usernameId: number): Promise<PartnersCreateResponse> {
     const response = await this.partnerModel.create({...createPartnerDto});
 
     const logData: CreatePartnerLogDto = {
       date: new Date(),
-      employee: username,
+      employeeId: usernameId,
+      partnerId: response.dataValues.partnerid,
       event: 'Добавлен',
       other: '',
-      partnerId: response.dataValues.partnerid,
-      partnerName: response.dataValues.partnerName,
     }
 
     this.partnerLogsService.create(logData)
@@ -49,7 +48,7 @@ export class PartnersService {
     }
   }
 
-  async update(updatePartnerDto: UpdatePartnerDto, username: string, event?: LogEvent): Promise<PartnersUpdateResponse> {
+  async update(updatePartnerDto: UpdatePartnerDto, usernameId: number, event?: LogEvent): Promise<PartnersUpdateResponse> {
     const beforeUpdateUser = await this.findOne(String(updatePartnerDto.partnerid));
     const response = await this.partnerModel.update({fiatBalance: beforeUpdateUser.fiatBalance, ...updatePartnerDto},
       {
@@ -67,7 +66,7 @@ export class PartnersService {
 
     const afterUpdateUser = await this.findOne(String(updatePartnerDto.partnerid));
 
-    this.partnerLogsService.createWithDetails(beforeUpdateUser, afterUpdateUser, event || 'Изменен', username)
+    this.partnerLogsService.createWithDetails(beforeUpdateUser, afterUpdateUser, event || 'Изменен', usernameId)
 
     const effectedCount = response[0];
     const msg = Boolean(effectedCount) ? 'Изменения сохранены' : 'Данные не изменены';
@@ -140,10 +139,10 @@ export class PartnersService {
     });
   }
 
-  async remove(id: string, username: string): Promise<PartnersRemoveResponse> {
-    const user = await this.findOne(id);
+  async remove(id: string, usernameId: number): Promise<PartnersRemoveResponse> {
+    const partner = await this.findOne(id);
 
-    if (!user) {
+    if (!partner) {
       throw new BadRequestException({
         status: 'error',
         message: ['Элемент не удален'],
@@ -152,15 +151,21 @@ export class PartnersService {
       })
     }
 
-    await user.destroy();
+    await this.partnerModel.findOne({
+      where: {
+        partnerid: id
+      }
+    }).then(temp => {
+      temp.destroy();
+    })
+
 
     const logData: CreatePartnerLogDto = {
       date: new Date(),
-      employee: username,
+      employeeId: usernameId,
+      partnerId: partner.partnerid,
       event: 'Удален',
       other: '',
-      partnerId: user.id,
-      partnerName: user.partnerName,
     }
 
     this.partnerLogsService.create(logData)

@@ -1,5 +1,5 @@
 import {ApiProperty} from '@nestjs/swagger';
-import {Response} from '../../interfaces/interface';
+import {Response} from '../../_interfaces/interface';
 import {EnumCancelReason, EnumStatus, EnumTypeWithdraw, IWithdraw} from '../models/withdraws.model';
 
 export class WithdrawsAllResponseData implements IWithdraw {

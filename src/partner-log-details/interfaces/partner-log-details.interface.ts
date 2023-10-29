@@ -1,7 +1,7 @@
 import {IPartnerLogDetails} from '../models/partner-log-details.model';
 import {ApiProperty} from '@nestjs/swagger';
 import {IsNumber, IsString} from 'class-validator';
-import {Response} from '../../interfaces/interface';
+import {Response} from '../../_interfaces/interface';
 import {EnumCurrency, EnumTariffPlan} from '../../partners/models/partner.model';
 
 export class PartnerLogDetailsResponseData implements IPartnerLogDetails {

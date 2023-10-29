@@ -1,7 +1,7 @@
 import {BadRequestException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/sequelize';
 
-import {Response} from '../interfaces/interface'
+import {Response} from '../_interfaces/interface'
 import {Token} from './models/token.model';
 import {TokensAllResponse} from './interfaces/tokens.interface';
 import {UpdateTokenDto} from './dto/update-token.dto';

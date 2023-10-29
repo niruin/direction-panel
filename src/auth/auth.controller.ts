@@ -6,7 +6,7 @@ import { SignInDto } from './dto/sign-in.dto';
 import { Public } from './decorator/public.decorator';
 import {QrcodeResponse, SignInResponse, SignInResponseType} from './types';
 import {UpdateUsernameDto} from './dto/update-username.dto';
-import {Response} from '../interfaces/interface';
+import {Response} from '../_interfaces/interface';
 import {UpdatePasswordDto} from './dto/update-password.dto';
 import {TwoFactorActivationDto} from './dto/two-factor-activation.dto';
 

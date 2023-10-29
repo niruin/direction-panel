@@ -4,7 +4,7 @@ import {InjectModel} from '@nestjs/sequelize';
 import {EnumCancelReason, EnumStatus, Withdraw} from './models/withdraws.model';
 import {WithdrawsAllResponse, WithdrawsSendingCountResponse} from './interfaces/withdraws.interface';
 import {IExecuteWithdrawsDto, IUpdateStatusWithdrawsDto} from './dto/execute-withdraws.dto';
-import {Response} from '../interfaces/interface'
+import {Response} from '../_interfaces/interface'
 import {WithdrawLogsService} from '../withdraw-logs/withdraw-logs.service';
 import {CreateWithdrawLogDto} from '../withdraw-logs/dto/create-withdraw-log.dto';
 import {Partner} from '../partners/models/partner.model';
@@ -83,7 +83,7 @@ export class WithdrawsService {
     }
   }
 
-  async execute(executeWithdrawsDto: IExecuteWithdrawsDto, username: string): Promise<Response> {
+  async execute(executeWithdrawsDto: IExecuteWithdrawsDto, usernameId: number): Promise<Response> {
     const {withdrawid, ...restData} = executeWithdrawsDto;
     const data = {
       ...restData,
@@ -110,7 +110,7 @@ export class WithdrawsService {
       date: new Date(),
       withdrawId: withdrawid,
       event: EnumStatus.send,
-      employee: username,
+      employeeId: usernameId,
       other: ''
     }
     this.withdrawLogsService.create(logData)
@@ -122,7 +122,7 @@ export class WithdrawsService {
     }
   }
 
-  async updateStatus(executeWithdrawsDto: IUpdateStatusWithdrawsDto, username: string): Promise<Response> {
+  async updateStatus(executeWithdrawsDto: IUpdateStatusWithdrawsDto, usernameId: number): Promise<Response> {
     let cancelReason = null;
     const {withdrawid, status} = executeWithdrawsDto;
 
@@ -161,14 +161,14 @@ export class WithdrawsService {
       const partner = await this.partnersService.findOne(String(withdraw.partnerId));
       const newFiatBalance = Number(partner.fiatBalance) + Number(withdraw.fiatamount);
 
-      await this.partnersService.update({...partner, fiatBalance: newFiatBalance}, username, 'Изменен');
+      await this.partnersService.update({...partner, fiatBalance: newFiatBalance}, usernameId, 'Изменен');
     }
 
     const logData: CreateWithdrawLogDto = {
       date: new Date(),
       withdrawId: withdrawid,
       event: executeWithdrawsDto.status,
-      employee: username,
+      employeeId: usernameId,
       other: ''
     }
 

@@ -1,7 +1,7 @@
 import {BadRequestException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/sequelize';
 
-import {Response} from '../interfaces/interface'
+import {Response} from '../_interfaces/interface'
 import {EnumBotCheckPeriodHours, Proxy} from './model/proxy.model';
 import {UpdateProxyDto} from './dto/update-proxy.dto';
 import {ProxyAllResponse} from './interfaces/proxy.interface';

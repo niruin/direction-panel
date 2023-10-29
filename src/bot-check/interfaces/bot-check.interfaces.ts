@@ -1,5 +1,5 @@
 import {ApiProperty} from '@nestjs/swagger';
-import {Response} from '../../interfaces/interface';
+import {Response} from '../../_interfaces/interface';
 import {EnumBotCheckGroupStatus, IBotCheckGroup} from '../models/bot-check-group.model';
 import {IBotCheck} from '../models/bot-check.model';
 

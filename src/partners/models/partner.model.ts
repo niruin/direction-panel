@@ -1,4 +1,4 @@
-import {Column, Model, Table, HasMany, DataType} from 'sequelize-typescript';
+import {Column, Model, Table, HasMany, DataType, PrimaryKey} from 'sequelize-typescript';
 import {DataTypes} from 'sequelize';
 import {Bot} from '../../bots/models/bot.model';
 import {Withdraw} from '../../withdraws/models/withdraws.model';
@@ -36,6 +36,7 @@ export interface IPartner {
   tableName: 'zs_partners'
 })
 export class Partner extends Model implements IPartner {
+  @PrimaryKey
   @Column({ type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true})
   partnerid: number;
   @Column({ type: DataTypes.DECIMAL(20, 10), defaultValue: 0})

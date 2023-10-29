@@ -4,7 +4,7 @@ import {Body, Controller, Get, Param, Post, Query, Request} from '@nestjs/common
 import {BotCheckService} from './bot-check.service';
 import {CreateBotCheckDto} from './dto/create-bot-check.dto';
 import {BotCheckAllResponse, BotCheckGroupsAllResponse} from './interfaces/bot-check.interfaces';
-import {Response} from '../interfaces/interface';
+import {Response} from '../_interfaces/interface';
 
 @ApiTags('Bot check')
 @Controller('bot-check')

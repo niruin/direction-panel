@@ -3,9 +3,8 @@ import {InjectModel} from '@nestjs/sequelize';
 
 import {IUser, User} from './models/users.model';
 import {CreateUserDto} from './dto/create-user.dto';
-import {Response} from '../interfaces/interface';
+import {Response} from '../_interfaces/interface';
 import {UserDictionaryResponse, UserResponseType} from './interfaces/users.interface';
-import {IPartner} from '../partners/models/partner.model';
 
 @Injectable()
 export class UsersService {

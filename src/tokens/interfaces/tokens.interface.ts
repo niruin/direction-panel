@@ -1,5 +1,5 @@
 import {ApiProperty} from '@nestjs/swagger';
-import {Response} from '../../interfaces/interface';
+import {Response} from '../../_interfaces/interface';
 import {IToken} from '../models/token.model';
 
 export class TokenResponseData implements IToken {

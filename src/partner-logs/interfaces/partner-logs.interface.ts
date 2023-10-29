@@ -1,10 +1,10 @@
 import {ApiProperty} from '@nestjs/swagger';
 
-import {Response} from '../../interfaces/interface';
+import {Response} from '../../_interfaces/interface';
 import {IPartnerLog} from '../models/partner-log.model';
 import {LogEvent} from '../dto/create-partner-log.dto';
 
-export class PartnerLogsResponseData implements IPartnerLog {
+export class PartnerLogsResponseData implements Omit<IPartnerLog, 'employeeId'> {
   @ApiProperty({example: 1})
   id: number;
   @ApiProperty({example: 'Sat May 20 2023 11:00:40 GMT+0300 (Москва, стандартное время)'})

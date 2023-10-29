@@ -1,9 +1,9 @@
 import {ApiProperty} from '@nestjs/swagger';
 import {IWithdrawLog} from '../models/withdraw-log.model';
 import {EnumStatus} from '../../withdraws/models/withdraws.model';
-import {Response} from '../../interfaces/interface';
+import {Response} from '../../_interfaces/interface';
 
-export class WithdrawLogsResponseData implements IWithdrawLog {
+export class WithdrawLogsResponseData implements Omit<IWithdrawLog, 'employeeId'> {
   @ApiProperty({example: 1})
   id: number;
   @ApiProperty({example: 'Sat May 20 2023 11:00:40 GMT+0300 (Москва, стандартное время)'})

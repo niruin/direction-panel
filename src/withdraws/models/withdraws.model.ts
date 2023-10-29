@@ -1,5 +1,6 @@
 import {Column, Model, Table, DataType, ForeignKey, BelongsTo} from 'sequelize-typescript';
 import {DataTypes} from 'sequelize';
+
 import {Partner} from '../../partners/models/partner.model';
 
 export enum EnumTypeWithdraw {

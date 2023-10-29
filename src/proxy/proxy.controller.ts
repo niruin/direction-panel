@@ -1,7 +1,7 @@
-import {ApiOkResponse, ApiProperty, ApiTags} from '@nestjs/swagger';
+import {ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {Body, Controller, Get, Put} from '@nestjs/common';
 
-import {Response} from '../interfaces/interface';
+import {Response} from '../_interfaces/interface';
 import {ProxyService} from './proxy.service';
 import {UpdateProxyDto} from './dto/update-proxy.dto';
 import {Proxy} from './model/proxy.model';

@@ -1,7 +1,7 @@
 import {ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {Body, Controller, Delete, Get, Param, Put, Query, Request} from '@nestjs/common';
 
-import {Response} from '../interfaces/interface';
+import {Response} from '../_interfaces/interface';
 import {BotsService} from './bots.service';
 import {BotsAllResponse} from './interfaces/bots.interface';
 import {UpdateBotDto} from './dto/update-bot.dto';

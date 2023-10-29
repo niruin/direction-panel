@@ -1,7 +1,7 @@
 import {IUser, User} from '../models/users.model';
 import {ApiProperty} from '@nestjs/swagger';
 import {DataType} from 'sequelize-typescript';
-import {Response} from '../../interfaces/interface';
+import {Response} from '../../_interfaces/interface';
 import {PartnerDictionaryResponseData} from '../../partners/interfaces/partners.interface';
 import {IPartner} from '../../partners/models/partner.model';
 

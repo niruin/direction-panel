@@ -9,7 +9,7 @@ import {JwtService} from '@nestjs/jwt';
 
 import {UsersService} from '../users/users.service';
 import {QrcodeResponse, SignInResponseType} from './types';
-import {Response} from '../interfaces/interface';
+import {Response} from '../_interfaces/interface';
 import {UpdateUsernameDto} from './dto/update-username.dto';
 import {UpdatePasswordDto} from './dto/update-password.dto';
 import {IUser} from '../users/models/users.model';

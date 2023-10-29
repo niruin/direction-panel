@@ -1,7 +1,7 @@
 import {ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {Body, Controller, Delete, Get, Param, Post, Put, Query, Request} from '@nestjs/common';
 
-import {Response} from '../interfaces/interface';
+import {Response} from '../_interfaces/interface';
 import {TokensService} from './tokens.service';
 import {TokensAllResponse} from './interfaces/tokens.interface';
 import {CreateTokenDto} from './dto/create-token.dto';

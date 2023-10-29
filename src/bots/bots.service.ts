@@ -3,7 +3,7 @@ import {InjectModel} from '@nestjs/sequelize';
 import {Cron, CronExpression} from '@nestjs/schedule';
 import {HttpService} from '@nestjs/axios';
 
-import {Response} from '../interfaces/interface'
+import {Response} from '../_interfaces/interface'
 import {Bot, EnumBotStatus} from './models/bot.model';
 import {BotsAllResponse} from './interfaces/bots.interface';
 import {UpdateBotDto} from './dto/update-bot.dto';
@@ -88,7 +88,7 @@ export class BotsService {
             this.partnersService.update({
               ...partner,
               countBotLimit: partner.countBotLimit - 1
-            }, 'System', 'Коррекция лимита')
+            }, null, 'Коррекция лимита')
           }
         }
 

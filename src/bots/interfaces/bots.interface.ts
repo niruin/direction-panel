@@ -1,6 +1,6 @@
 import {ApiProperty} from '@nestjs/swagger';
 
-import {Response} from '../../interfaces/interface';
+import {Response} from '../../_interfaces/interface';
 import {EnumBotStatus, IBot} from '../models/bot.model';
 
 export class BotResponseData implements IBot {

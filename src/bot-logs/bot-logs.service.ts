@@ -3,7 +3,7 @@ import {InjectModel} from '@nestjs/sequelize';
 
 import {BotLogEvent, CreateBotLogDto} from './dto/create-bot-log.dto';
 import {BotLog} from './models/bot-logs.model';
-import {Response} from '../interfaces/interface';
+import {Response} from '../_interfaces/interface';
 import {BotLogsAllResponse} from './interfaces/bot-logs';
 
 @Injectable()

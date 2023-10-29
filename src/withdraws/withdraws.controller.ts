@@ -3,7 +3,7 @@ import {Body, Controller, Get, Put, Query, Request} from '@nestjs/common';
 
 import {WithdrawsService} from './withdraws.service';
 import {WithdrawsAllResponse, WithdrawsSendingCountResponse} from './interfaces/withdraws.interface';
-import {Response} from '../interfaces/interface';
+import {Response} from '../_interfaces/interface';
 import {ExecuteWithdrawsDto, UpdateStatusWithdrawsDto} from './dto/execute-withdraws.dto';
 
 @ApiTags('Withdraws')
@@ -29,12 +29,12 @@ export class WithdrawsController {
   @ApiOkResponse({type: Response})
   @Put('/update-status')
   updateStatus(@Request() req,@Body() updateStatusWithdrawsDto: UpdateStatusWithdrawsDto): Promise<Response> {
-    return  this.withdrawsService.updateStatus(updateStatusWithdrawsDto, req.user.username);
+    return  this.withdrawsService.updateStatus(updateStatusWithdrawsDto, req.user.id);
   }
 
   @ApiOkResponse({type: Response})
   @Put('/execute')
   execute(@Request() req, @Body() executeWithdrawsDto: ExecuteWithdrawsDto): Promise<Response> {
-    return this.withdrawsService.execute(executeWithdrawsDto, req.user.username);
+    return this.withdrawsService.execute(executeWithdrawsDto, req.user.id);
   }
 }

@@ -1,13 +1,14 @@
 import {BadRequestException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/sequelize';
 
-import {PartnerLogsAllResponse} from './interfaces/partner-logs.interface';
+import {PartnerLogsAllResponse, PartnerLogsResponseData} from './interfaces/partner-logs.interface';
 import {IPartnerLog, PartnerLog} from './models/partner-log.model';
 import {PartnersCreateResponse} from '../partners/interfaces/partners.interface';
 import {LogEvent} from './dto/create-partner-log.dto';
 import {PartnerLogDetailsService} from '../partner-log-details/partner-log-details.service';
 import {ICreatePartner} from '../partners/dto/create-partner.dto';
-import {IPartner} from '../partners/models/partner.model';
+import {IPartner, Partner} from '../partners/models/partner.model';
+import {User} from '../users/models/users.model';
 
 @Injectable()
 export class PartnerLogsService {
@@ -18,14 +19,14 @@ export class PartnerLogsService {
   ) {
   }
 
-  async createWithDetails(beforeUpdateUser: ICreatePartner, afterUpdateUser: IPartner, event: LogEvent, employee: string): Promise<PartnersCreateResponse> {
+  async createWithDetails(beforeUpdateUser: ICreatePartner, afterUpdateUser: IPartner, event: LogEvent, employeeId: number): Promise<PartnersCreateResponse> {
     const logData: IPartnerLog = {
       date: new Date(),
-      employee,
+      employeeId: employeeId,
       event: event,
       other: '',
       partnerId: afterUpdateUser.partnerid,
-      partnerName: beforeUpdateUser.partnerName,
+      // partnerName: beforeUpdateUser.partnerName,
     }
     const response = await this.partnerLogModel.create({...logData});
 
@@ -75,7 +76,17 @@ export class PartnerLogsService {
         where: {
           ...(partnerId && {partnerId: partnerId}),
           ...(logEvent && {event: [...logEvent]})
-        }
+        },
+        include: [
+          {
+            model: User,
+            attributes: ['username'],
+          },
+          {
+            model: Partner,
+            attributes: ['partnerName'],
+          },
+        ]
       }).catch((error) => {
       throw new BadRequestException({
         status: 'error',
@@ -85,11 +96,17 @@ export class PartnerLogsService {
       })
     });
 
+    const data: PartnerLogsResponseData[] = response.rows.map(item => ({
+      ...item,
+      partnerName: item['partner.partnerName'],
+      employee: item['employee.username'],
+    }))
+
     return {
       status: 'success',
       message: ['Данные получены'],
       statusCode: HttpStatus.OK,
-      data: response.rows,
+      data: data,
       totalCount: response.count
     }
   }

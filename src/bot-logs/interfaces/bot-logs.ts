@@ -1,5 +1,5 @@
 import {ApiProperty} from '@nestjs/swagger';
-import {Response} from '../../interfaces/interface';
+import {Response} from '../../_interfaces/interface';
 import {IBotLog} from '../models/bot-logs.model';
 import {BotLogEvent} from '../dto/create-bot-log.dto';
 

@@ -1,11 +1,12 @@
-import {Column, DataType, HasOne, Model, Table} from 'sequelize-typescript';
+import {BelongsTo, Column, DataType, ForeignKey, Model, Table} from 'sequelize-typescript';
 import {DataTypes} from 'sequelize';
 
 import {EnumStatus} from '../../withdraws/models/withdraws.model';
+import {User} from '../../users/models/users.model';
 
 export interface IWithdrawLog {
   withdrawId: number;
-  employee: string;
+  employeeId: number;
   event: EnumStatus;
   other: string;
   date: Date;
@@ -19,12 +20,16 @@ export class WithdrawLog extends Model implements IWithdrawLog {
   id: number;
   @Column
   withdrawId: number;
-  @Column
-  employee: string;
   @Column({type: DataType.ENUM(...Object.values(EnumStatus))})
   event: EnumStatus;
   @Column
   other: string;
   @Column
   date: Date;
+
+  @ForeignKey(() => User)
+  @Column
+  employeeId: number;
+  @BelongsTo(() => User)
+  employee: User;
 }

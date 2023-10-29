@@ -2,7 +2,7 @@ import {BadRequestException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/sequelize';
 import {HttpService} from '@nestjs/axios';
 
-import {Response} from '../interfaces/interface'
+import {Response} from '../_interfaces/interface'
 import {BotCheck, IBotCheck} from './models/bot-check.model';
 import {BotCheckGroup, EnumBotCheckGroupStatus} from './models/bot-check-group.model';
 import {BotCheckAllResponse, BotCheckGroupsAllResponse} from './interfaces/bot-check.interfaces';

@@ -1,6 +1,6 @@
 import {ApiProperty} from '@nestjs/swagger';
 
-import {Response} from '../../interfaces/interface';
+import {Response} from '../../_interfaces/interface';
 import {EnumBotCheckPeriodHours, IProxy} from '../model/proxy.model';
 
 export class ProxyResponseData implements IProxy {

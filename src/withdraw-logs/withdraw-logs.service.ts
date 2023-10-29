@@ -4,9 +4,10 @@ import {InjectModel} from '@nestjs/sequelize';
 import {WithdrawLog} from './models/withdraw-log.model';
 import {WithdrawLogsResponse, WithdrawLogsResponseData} from './interfaces/withdraw-logs.interface';
 import {CreateWithdrawLogDto} from './dto/create-withdraw-log.dto';
-import {Response} from '../interfaces/interface';
-import {EnumTariffPlan} from '../partners/models/partner.model';
+import {Response} from '../_interfaces/interface';
+import {EnumTariffPlan, Partner} from '../partners/models/partner.model';
 import {EnumStatus} from '../withdraws/models/withdraws.model';
+import {User} from '../users/models/users.model';
 
 @Injectable()
 export class WithdrawLogsService {
@@ -37,7 +38,13 @@ export class WithdrawLogsService {
       where: {
         ...(withdrawId && {withdrawId: Number(withdrawId)}),
         ...(event && {event: event})
-      }
+      },
+      include: [
+        {
+          model: User,
+          attributes: ['username'],
+        },
+      ]
     }).catch((error) => {
       throw new BadRequestException({
         status: 'error',
@@ -47,11 +54,18 @@ export class WithdrawLogsService {
       })
     });
 
+    const data: WithdrawLogsResponseData[] = response.rows.map(item => {
+      return {
+        ...item,
+        employee: item['employee.username']
+      }
+    })
+
     return {
       status: 'success',
       message: ['Данные получены'],
       statusCode: HttpStatus.OK,
-      data: response.rows,
+      data: data,
       totalCount: response.count
     }
   }

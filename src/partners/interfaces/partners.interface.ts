@@ -1,6 +1,6 @@
 import {ApiProperty} from '@nestjs/swagger';
 
-import {Response} from '../../interfaces/interface';
+import {Response} from '../../_interfaces/interface';
 import {EnumCurrency, EnumTariffPlan, IPartner} from '../models/partner.model';
 
 class PartnersCreateResponseData {
